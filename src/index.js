@@ -1,4 +1,4 @@
-import { init } from './commands/init.js';
+const { init } = require('../../commands/init');
 
 const [, , command] = process.argv;
 
