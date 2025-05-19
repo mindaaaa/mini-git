@@ -4,8 +4,9 @@ const createBlobObject = require('../core/createBlobObject');
 const addFileToIndex = require('../core/addFileToIndex');
 
 function add(filename) {
-  const filePath = path.resolve(filename);
-  if (fs.existsSync(filePath)) {
+  const filePath = path.join(process.cwd(), '.mini-git', filename);
+
+  if (!fs.existsSync(filePath)) {
     console.log(
       `fatal:  '${filename}'경로명세가 어떤 파일과도 일치하지 않습니다`
     );
