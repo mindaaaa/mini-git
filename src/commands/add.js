@@ -8,7 +8,7 @@ function add(filename, options = {}) {
   const filePath = path.join(process.cwd(), basePath, filename);
 
   if (!fs.existsSync(filePath)) {
-    console.log(
+    console.error(
       `fatal:  '${filename}'경로명세가 어떤 파일과도 일치하지 않습니다`
     );
     return;

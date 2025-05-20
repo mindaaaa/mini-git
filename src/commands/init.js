@@ -5,7 +5,7 @@ const GIT_DIR = path.resolve('.mini-git');
 
 function init() {
   if (fs.existsSync(GIT_DIR)) {
-    console.log('⚠️ 이미 .mini-git의 깃 저장소가 초기화된 상태입니다.');
+    console.error('⚠️ 이미 .mini-git의 깃 저장소가 초기화된 상태입니다.');
     return;
   }
 

@@ -4,7 +4,7 @@ const init = require('../commands/init.js');
 
 const GIT_DIR = path.resolve('.mini-git');
 
-describe('init()', () => {
+describe('init() 단위 테스트', () => {
   afterEach(() => {
     if (fs.existsSync(GIT_DIR)) {
       fs.rmSync(GIT_DIR, { recursive: true });

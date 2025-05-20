@@ -20,7 +20,7 @@ function createBlobObject(content) {
   }
 
   const objectPath = path.join(objectDir, blobFile);
-  fs.writeFileSync(objectPath, blobData);
+  fs.writeFileSync(objectPath, store);
 
   return hash;
 }
