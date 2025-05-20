@@ -3,8 +3,9 @@ const path = require('path');
 const createBlobObject = require('../core/createBlobObject');
 const addFileToIndex = require('../core/addFileToIndex');
 
-function add(filename) {
-  const filePath = path.join(process.cwd(), '.mini-git', filename);
+function add(filename, options = {}) {
+  const basePath = options.basePath || '';
+  const filePath = path.join(process.cwd(), basePath, filename);
 
   if (!fs.existsSync(filePath)) {
     console.log(
