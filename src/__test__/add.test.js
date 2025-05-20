@@ -34,7 +34,7 @@ describe('add() 단위 테스트', () => {
 
     const index = JSON.parse(fs.readFileSync(INDEX_PATH, 'utf-8'));
 
-    const fileContent = fs.readFileSync(TEST_FILE); // 버퍼로 읽기
+    const fileContent = fs.readFileSync(TEST_FILE);
     const header = `blob ${fileContent.length}\0`;
     const store = Buffer.concat([Buffer.from(header), fileContent]);
 
