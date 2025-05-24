@@ -35,7 +35,28 @@ switch (command) {
     break;
   }
 
+  case 'branch': {
+    const branch = args[0];
+    if (!branch) {
+      console.error('⚠️ 브랜치 이름을 입력해주세요.');
+      return;
+    }
+    createBranch(gitDir, branch);
+    break;
+  }
+
+  case 'checkout': {
+    const branch = args[0];
+    if (!branch) {
+      console.error('fatal: 현재 위치가 만들 예정인 브랜치에 있습니다');
+      return;
+    }
+    checkoutBranch(gitDir, branch);
+    break;
+  }
+
   default: {
     console.error(`mini-git: '${command}'은(는) 깃 명령이 아닙니다.`);
+    console.log(`사용 가능한 명령어: init, add, commit, branch, checkout`);
   }
 }
