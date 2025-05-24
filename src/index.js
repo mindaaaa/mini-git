@@ -1,6 +1,8 @@
 const init = require('../src/commands/init');
 const add = require('../src/commands/add');
 const commit = require('../src/commands/commit');
+const createBranch = require('../src/commands/branch');
+const checkoutBranch = require('../src/commands/checkout');
 const resolveToAbsolutePath = require('../src/utils/resolveToAbsolutePath');
 
 const [, , command, ...args] = process.argv;
@@ -34,6 +36,6 @@ switch (command) {
   }
 
   default: {
-    console.error(`알 수 없는 명령어: ${command}`);
+    console.error(`mini-git: '${command}'은(는) 깃 명령이 아닙니다.`);
   }
 }
