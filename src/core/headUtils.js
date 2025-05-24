@@ -36,9 +36,15 @@ function getCurrentCommitHash(gitDir) {
   return head.hash;
 }
 
-function setHeadRef(gitDir, branch) {}
+function setHeadRef(gitDir, branchName) {
+  const headPath = path.join(gitDir, 'HEAD');
+  fs.writeFileSync(headPath, `ref: refs/heads/${branchName}\n`);
+}
 
-function setHeadDetached(gitDir, commitHash) {}
+function setHeadDetached(gitDir, commitHash) {
+  const headPath = path.join(gitDir, 'HEAD');
+  fs.writeFileSync(headPath, `${commitHash}\n`);
+}
 
 module.exports = {
   readHead,
