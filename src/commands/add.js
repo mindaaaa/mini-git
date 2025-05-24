@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const resolveToAbsolutePath = require('../utils/resolveToAbsolutePath');
 const createBlobObject = require('../core/createBlobObject');
 const addFileToIndex = require('../core/addFileToIndex');
 
-function add(filename, options = {}) {
-  const basePath = options.basePath || '';
-  const filePath = path.join(process.cwd(), basePath, filename);
+function add(filename, gitDir) {
+  const filePath = resolveToAbsolutePath(filename);
 
   if (!fs.existsSync(filePath)) {
     console.error(
@@ -15,9 +15,9 @@ function add(filename, options = {}) {
   }
 
   const content = fs.readFileSync(filePath, 'utf-8');
-  const hash = createBlobObject(content);
+  const hash = createBlobObject(content, gitDir);
 
-  addFileToIndex(filename, hash);
+  addFileToIndex(filename, hash, gitDir);
   console.log(`${filename}이 스테이징 되었습니다. (${hash})`);
 }
 

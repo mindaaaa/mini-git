@@ -2,9 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const GIT_DIR = path.resolve('.mini-git');
-
-function createBlobObject(content) {
+function createBlobObject(content, gitDir) {
   const buffer = Buffer.isBuffer(content) ? content : Buffer.from(content);
   const header = `blob ${buffer.length}\0`;
   const store = Buffer.concat([Buffer.from(header), buffer]);
@@ -13,7 +11,7 @@ function createBlobObject(content) {
 
   const blobDir = hash.slice(0, 2);
   const blobFile = hash.slice(2);
-  const objectDir = path.join(GIT_DIR, 'objects', blobDir);
+  const objectDir = path.join(gitDir, 'objects', blobDir);
 
   if (!fs.existsSync(objectDir)) {
     fs.mkdirSync(objectDir);

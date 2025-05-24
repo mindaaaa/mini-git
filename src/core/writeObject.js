@@ -2,14 +2,12 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const GIT_DIR = path.resolve('.mini-git');
-
-function writeObject(content) {
+function writeObject(content, gitDir) {
   const hash = crypto.createHash('sha1').update(content).digest('hex');
   const dir = hash.slice(0, 2);
   const filename = hash.slice(2);
 
-  const objectDir = path.join(GIT_DIR, 'objects', dir);
+  const objectDir = path.join(gitDir, 'objects', dir);
   const objectPath = path.join(objectDir, filename);
 
   if (!fs.existsSync(objectDir)) {

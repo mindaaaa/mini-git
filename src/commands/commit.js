@@ -3,11 +3,9 @@ const path = require('path');
 const createTreeHash = require('../core/createTreeHash');
 const writeObject = require('../core/writeObject');
 
-const GIT_DIR = path.resolve('.mini-git');
-const INDEX_PATH = path.join(GIT_DIR, 'index.json');
-const HEAD_PATH = path.join(GIT_DIR, 'HEAD');
-
-function commit(message) {
+function commit(message, gitDir) {
+  const INDEX_PATH = path.join(gitDir, 'index.json');
+  const HEAD_PATH = path.join(gitDir, 'HEAD');
   const headRef = fs
     .readFileSync(HEAD_PATH, 'utf-8')
     .trim()
@@ -19,8 +17,8 @@ function commit(message) {
   }
   const index = JSON.parse(fs.readFileSync(INDEX_PATH, 'utf-8'));
 
-  const treeHash = createTreeHash(index);
-  const branchPath = path.join(GIT_DIR, 'refs', 'heads', headRef);
+  const treeHash = createTreeHash(index, gitDir);
+  const branchPath = path.join(gitDir, 'refs', 'heads', headRef);
 
   const parent = fs.existsSync(branchPath)
     ? fs.readFileSync(branchPath, 'utf-8').trim()
@@ -37,7 +35,7 @@ committer ${author} ${timestamp}
 ${message}
 `;
 
-  const commitHash = writeObject(commitContent);
+  const commitHash = writeObject(commitContent, gitDir);
 
   fs.writeFileSync(branchPath, commitHash);
   console.log(`file changed, ${message}`);

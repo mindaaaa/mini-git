@@ -1,9 +1,7 @@
 const path = require('path');
 const writeObject = require('./writeObject');
 
-const GIT_DIR = path.resolve('.mini-git');
-
-function createTreeHash(index) {
+function createTreeHash(index, gitDir) {
   const fileEntries = Object.entries(index).map(([filename, hash]) => {
     return `100644 ${filename}\\0${hash}`;
   });
@@ -16,7 +14,7 @@ function createTreeHash(index) {
   const store = Buffer.concat([Buffer.from(treeHeader), buffer]);
   // store = "tree 123\\0100644 file1.txt\\0abcd1234...\n100644 file2.txt\\0efgh5678..."
 
-  return writeObject(store);
+  return writeObject(store, gitDir);
 }
 
 module.exports = createTreeHash;
