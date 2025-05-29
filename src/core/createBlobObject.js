@@ -9,6 +9,7 @@ function createBlobObject(content, gitDir) {
 
   const hash = crypto.createHash('sha1').update(store).digest('hex');
 
+  // TODO: 매직 리터럴 상수로 빼기
   const blobDir = hash.slice(0, 2);
   const blobFile = hash.slice(2);
   const objectDir = path.join(gitDir, 'objects', blobDir);

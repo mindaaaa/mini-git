@@ -21,3 +21,5 @@ function createBranch(gitDir, branch) {
 }
 
 module.exports = createBranch;
+
+// TODO: 관련 있는 모듈에 함수 모아놓기(무조건 headUtil에 넣어두는게 오히려 가독성이 떨어질 수 있음)

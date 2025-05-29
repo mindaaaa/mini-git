@@ -1,21 +1,27 @@
 function parseCommitObject(raw) {
-  const [headers, ...messageLines] = raw.split('\n\n');
-  const lines = headers.split('\n');
+  const [part1, part2, ...rest] = raw.split('\n\n');
+  const headers = `${part1}\n${part2}`.trim();
+  const message = rest.join('\n\n').trim();
+
   const result = {};
+  const headerLines = headers.split('\n');
 
-  const handlers = {
-    tree: (line) => (result.tree = line.slice(5)),
-    parent: (line) => (result.parent = line.slice(7)),
-    author: (line) => (result.author = line.slice(7)),
-    committer: (line) => (result.timestamp = line.slice(10)),
-  };
+  for (const line of headerLines) {
+    const [key, ...rest] = line.split(' ');
+    const value = rest.join(' ');
 
-  for (const line of lines) {
-    const key = line.split(' ')[0];
-    if (handlers[key]) handlers[key](line);
+    if (key === 'tree') {
+      result.tree = value;
+    } else if (key === 'parent') {
+      result.parent = value;
+    } else if (key === 'author') {
+      result.author = value;
+    } else if (key === 'committer') {
+      result.timestamp = value;
+    }
   }
 
-  result.message = messageLines.join('\n').trim();
+  result.message = message;
   return result;
 }
 

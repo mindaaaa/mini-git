@@ -24,6 +24,7 @@ function readHead(gitDir) {
 function getCurrentCommitHash(gitDir) {
   const head = readHead(gitDir);
 
+  // TODO: 얼리리턴으로 리팩토링
   if (head.type === 'ref') {
     if (!fs.existsSync(head.fullPath)) {
       console.error(

@@ -4,6 +4,8 @@ const path = require('path');
 // {
 //   "hello.txt": "e69de2..."
 // }
+
+// TODO: 'index.json' 환경변수로 빼기
 function addFileToIndex(fileName, hash, gitDir) {
   const INDEX_PATH = path.join(gitDir, 'index.json');
 

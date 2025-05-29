@@ -1,5 +1,6 @@
+'use strict';
+
 const fs = require('fs');
-const path = require('path');
 const resolveToAbsolutePath = require('../utils/resolveToAbsolutePath');
 const createBlobObject = require('../core/createBlobObject');
 const addFileToIndex = require('../core/addFileToIndex');

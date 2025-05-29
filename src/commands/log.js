@@ -6,7 +6,7 @@ function log(gitDir) {
   let currentHash = getCurrentCommitHash(gitDir);
 
   while (currentHash) {
-    const raw = readObject(currentHash, gitDir); // blob 형태로 읽음
+    const raw = readObject(currentHash, gitDir);
     const parsed = parseCommitObject(raw);
 
     console.log(`commit ${currentHash}`);

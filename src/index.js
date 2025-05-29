@@ -1,17 +1,22 @@
+'use strict';
+
 const init = require('../src/commands/init');
 const add = require('../src/commands/add');
 const commit = require('../src/commands/commit');
 const createBranch = require('../src/commands/branch');
 const checkoutBranch = require('../src/commands/checkout');
 const resolveToAbsolutePath = require('../src/utils/resolveToAbsolutePath');
+const log = require('../src/commands/log');
 
 const [, , command, ...args] = process.argv;
-const basePath = '.mini-git';
-const gitDir = resolveToAbsolutePath(basePath);
+const BASE_PATH = '.mini-git';
+const gitDir = resolveToAbsolutePath(BASE_PATH);
 
+// TODO: 전략 패턴
+// TODO: 템플릿 패턴 알아보기
 switch (command) {
   case 'init': {
-    init(basePath);
+    init(gitDir);
     break;
   }
 
@@ -52,6 +57,11 @@ switch (command) {
       return;
     }
     checkoutBranch(gitDir, branch);
+    break;
+  }
+
+  case 'log': {
+    log(gitDir);
     break;
   }
 

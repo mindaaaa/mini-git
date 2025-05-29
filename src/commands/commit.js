@@ -29,8 +29,8 @@ function commit(message, gitDir) {
 
   const commitContent = `tree ${treeHash}
 ${parent ? `parent ${parent}\n` : ''}
-author ${author} ${timestamp}
-committer ${author} ${timestamp}
+author ${author} 
+committer ${timestamp}
 
 ${message}
 `;
