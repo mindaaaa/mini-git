@@ -6,16 +6,15 @@ const getCurrentBranchName = require('../core/getCurrentBranchName');
 
 function log(gitDir) {
   const branchName = getCurrentBranchName(gitDir);
-  let currentHash = getCurrentCommitHash(gitDir);
+  const headHash = getCurrentCommitHash(gitDir);
+  let currentHash = headHash;
 
   while (currentHash) {
     const raw = readObject(currentHash, gitDir);
     const parsed = parseCommitObject(raw);
 
     const headInfo =
-      currentHash === getCurrentCommitHash(gitDir) && branchName
-        ? ` (HEAD -> ${branchName})`
-        : '';
+      currentHash === headHash && branchName ? ` (HEAD -> ${branchName})` : '';
 
     console.log(`commit ${currentHash}${headInfo}`);
     console.log(`Author: ${parsed.author}`);
