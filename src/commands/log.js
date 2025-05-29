@@ -2,15 +2,22 @@ const getCurrentCommitHash = require('../core/getCurrentCommitHash');
 const readObject = require('../utils/readObject');
 const parseCommitObject = require('../utils/parseCommitObject');
 const formatGitDate = require('../utils/formatGitDate');
+const getCurrentBranchName = require('../core/getCurrentBranchName');
 
 function log(gitDir) {
+  const branchName = getCurrentBranchName(gitDir);
   let currentHash = getCurrentCommitHash(gitDir);
 
   while (currentHash) {
     const raw = readObject(currentHash, gitDir);
     const parsed = parseCommitObject(raw);
 
-    console.log(`commit ${currentHash}`);
+    const headInfo =
+      currentHash === getCurrentCommitHash(gitDir) && branchName
+        ? ` (HEAD -> ${branchName})`
+        : '';
+
+    console.log(`commit ${currentHash}${headInfo}`);
     console.log(`Author: ${parsed.author}`);
     console.log(`Date:   ${formatGitDate(parsed.timestamp)}`);
     console.log(`\n    ${parsed.message}\n`);
