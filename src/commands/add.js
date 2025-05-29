@@ -1,17 +1,16 @@
 'use strict';
 
 const fs = require('fs');
-const resolveToAbsolutePath = require('../utils/resolveToAbsolutePath');
+const resolveFilePath = require('../utils/resolveFilePath');
 const createBlobObject = require('../core/createBlobObject');
 const addFileToIndex = require('../core/addFileToIndex');
+const { FILE_NOT_FOUND, FILE_ADDED } = require('../domain/messages');
 
 function add(filename, gitDir) {
-  const filePath = resolveToAbsolutePath(filename);
+  const filePath = resolveFilePath(filename);
 
   if (!fs.existsSync(filePath)) {
-    console.error(
-      `fatal:  '${filename}'경로명세가 어떤 파일과도 일치하지 않습니다`
-    );
+    console.error(FILE_NOT_FOUND(filename));
     return;
   }
 
@@ -19,7 +18,7 @@ function add(filename, gitDir) {
   const hash = createBlobObject(content, gitDir);
 
   addFileToIndex(filename, hash, gitDir);
-  console.log(`${filename}이 스테이징 되었습니다. (${hash})`);
+  console.log(FILE_ADDED(filename, hash));
 }
 
 module.exports = add;
