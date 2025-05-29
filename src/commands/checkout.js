@@ -1,17 +1,18 @@
 const fs = require('fs');
-const path = require('path');
 const { setHeadRef } = require('../core/headUtils');
+const { BRANCH_NOT_FOUND, CHECKOUT_SUCCESS } = require('../domain/messages');
+const { getBranchPath } = require('../domain/enums');
 
 function checkoutBranch(gitDir, branch) {
-  const branchPath = path.join(gitDir, 'refs', 'heads', branch);
+  const branchPath = getBranchPath(gitDir, branch);
 
   if (!fs.existsSync(branchPath)) {
-    console.error(`fatal: 브랜치 '${branch}'는 존재하지 않습니다.`);
+    console.error(BRANCH_NOT_FOUND(branch));
     return;
   }
 
   setHeadRef(gitDir, branch);
-  console.log(`'${branch}' 브랜치로 전환되었습니다`);
+  console.log(CHECKOUT_SUCCESS(branch));
 }
 
 module.exports = checkoutBranch;

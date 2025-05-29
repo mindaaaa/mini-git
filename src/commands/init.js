@@ -11,12 +11,13 @@ const {
 } = require('../domain/enums');
 const getHeadRefPath = require('../utils/getHeadRefPath');
 const resolveGitPath = require('../utils/resolveGitPath');
+const { INIT_ALREADY_EXISTS, INIT_SUCCESS } = require('../domain/messages');
 
 function init(gitDir = GIT_DIR) {
   const { absPath, relPath } = resolveGitPath(gitDir);
 
   if (fs.existsSync(absPath)) {
-    console.error(`⚠️ 이미 ${relPath}의 깃 저장소가 초기화된 상태입니다.`);
+    console.error(INIT_ALREADY_EXISTS(relPath));
     return;
   }
 
@@ -28,7 +29,7 @@ function init(gitDir = GIT_DIR) {
   const headContent = `${REF_PREFIX}${headRefPath}\n`;
   fs.writeFileSync(path.join(absPath, HEAD_FILE), headContent);
 
-  console.log(`${relPath} 안의 빈 깃 저장소를 다시 초기화했습니다.`);
+  console.log(INIT_SUCCESS(relPath));
 }
 
 module.exports = init;
