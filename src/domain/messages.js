@@ -14,4 +14,7 @@ module.exports = {
     `fatal: '${branch}'이라는 이름의 브랜치가 이미 존재합니다`,
   BRANCH_CREATED: (branch, hash) =>
     `'${branch}' 브랜치를 생성했습니다 (${hash})`,
+  COMMIT_NO_CHANGES: (branch) =>
+    `현재 브랜치 ${branch}\n커밋할 사항 없음, 작업 폴더 깨끗함`,
+  COMMIT_SUCCESS: (message) => `file changed, ${message}`,
 };

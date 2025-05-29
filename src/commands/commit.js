@@ -2,29 +2,33 @@ const fs = require('fs');
 const path = require('path');
 const createTreeHash = require('../core/createTreeHash');
 const writeObject = require('../core/writeObject');
+const getHeadRefPath = require('../utils/getHeadRefPath');
+const { AUTHOR_NAME, AUTHOR_EMAIL } = require('../config');
+const { HEAD_FILE, INDEX_FILE, REFS_HEADS_DIR } = require('../domain/enums');
+const { COMMIT_NO_CHANGES, COMMIT_SUCCESS } = require('../domain/messages');
 
 function commit(message, gitDir) {
-  const INDEX_PATH = path.join(gitDir, 'index.json');
-  const HEAD_PATH = path.join(gitDir, 'HEAD');
+  const indexPath = path.join(gitDir, INDEX_FILE);
+  const headPath = path.join(gitDir, HEAD_FILE);
+
   const headRef = fs
-    .readFileSync(HEAD_PATH, 'utf-8')
+    .readFileSync(headPath, 'utf-8')
     .trim()
     .split('refs/heads/')[1];
 
-  if (!fs.existsSync(INDEX_PATH)) {
-    console.error(`현재 브랜치 ${headRef}\n커밋할 사항 없음, 작업 폴더 깨끗함`);
+  if (!fs.existsSync(indexPath)) {
+    console.error(COMMIT_NO_CHANGES(headRef));
     return;
   }
-  const index = JSON.parse(fs.readFileSync(INDEX_PATH, 'utf-8'));
-
+  const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
   const treeHash = createTreeHash(index, gitDir);
-  const branchPath = path.join(gitDir, 'refs', 'heads', headRef);
 
+  const branchPath = path.join(gitDir, getHeadRefPath(headRef));
   const parent = fs.existsSync(branchPath)
     ? fs.readFileSync(branchPath, 'utf-8').trim()
     : null;
 
-  const author = 'minda <avalc@naver.com>';
+  const author = `${AUTHOR_NAME} <${AUTHOR_EMAIL}>`;
   const timestamp = new Date().toISOString();
 
   const commitContent = `tree ${treeHash}
@@ -38,7 +42,7 @@ ${message}
   const commitHash = writeObject(commitContent, gitDir);
 
   fs.writeFileSync(branchPath, commitHash);
-  console.log(`file changed, ${message}`);
+  console.log(COMMIT_SUCCESS(message));
 }
 
 module.exports = commit;
