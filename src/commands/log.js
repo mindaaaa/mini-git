@@ -1,6 +1,7 @@
 const getCurrentCommitHash = require('../core/getCurrentCommitHash');
 const readObject = require('../utils/readObject');
 const parseCommitObject = require('../utils/parseCommitObject');
+const formatGitDate = require('../utils/formatGitDate');
 
 function log(gitDir) {
   let currentHash = getCurrentCommitHash(gitDir);
@@ -11,7 +12,7 @@ function log(gitDir) {
 
     console.log(`commit ${currentHash}`);
     console.log(`Author: ${parsed.author}`);
-    console.log(`Date:   ${parsed.timestamp}`);
+    console.log(`Date:   ${formatGitDate(parsed.timestamp)}`);
     console.log(`\n    ${parsed.message}\n`);
 
     currentHash = parsed.parent;
@@ -19,3 +20,5 @@ function log(gitDir) {
 }
 
 module.exports = log;
+
+// Date:   Thu May 29 09:51:18 2025 +0900
