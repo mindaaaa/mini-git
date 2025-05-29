@@ -1,13 +1,9 @@
 const fs = require('fs');
-const path = require('path');
-const { OBJECTS_DIR } = require('../domain/enums');
 const { OBJECT_NOT_FOUND } = require('../domain/messages');
-const splitHash = require('../utils/splitHash');
+const getObjectPath = require('../utils/getObjectPath');
 
 function readObject(hash, gitDir) {
-  const { dir, file } = splitHash(hash);
-
-  const objectPath = path.join(gitDir, OBJECTS_DIR, dir, file);
+  const { objectPath } = getObjectPath(gitDir, hash);
 
   if (!fs.existsSync(objectPath)) {
     console.error(OBJECT_NOT_FOUND(hash));
