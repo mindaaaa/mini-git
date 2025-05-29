@@ -11,7 +11,6 @@ function getCurrentBranchName(gitDir) {
     return branchName;
   }
 
-  // detached HEAD일 경우
   return null;
 }
 

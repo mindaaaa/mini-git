@@ -1,13 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const { INDEX_FILE } = require('../domain/enums');
 
-// {
-//   "hello.txt": "e69de2..."
-// }
-
-// TODO: 'index.json' 환경변수로 빼기
 function addFileToIndex(fileName, hash, gitDir) {
-  const INDEX_PATH = path.join(gitDir, 'index.json');
+  const INDEX_PATH = path.join(gitDir, INDEX_FILE);
 
   const index = fs.existsSync(INDEX_PATH)
     ? JSON.parse(fs.readFileSync(INDEX_PATH), 'utf-8')

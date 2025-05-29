@@ -5,3 +5,5 @@ main
 
 text
 test
+
+strategies
