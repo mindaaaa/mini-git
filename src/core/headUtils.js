@@ -1,22 +1,25 @@
 const fs = require('fs');
 const path = require('path');
+const { REF_PREFIX, HEAD_FILE, HEAD_TYPES } = require('../domain/enums');
+const { INVALID_HEAD_REF } = require('../domain/messages');
+const getHeadPath = require('../utils/getHeadPath');
 
 function readHead(gitDir) {
-  const headPath = path.join(gitDir, 'HEAD');
+  const headPath = getHeadPath(gitDir);
   const headContent = fs.readFileSync(headPath, 'utf-8').trim();
 
-  if (headContent.startsWith('ref: ')) {
+  if (headContent.startsWith(REF_PREFIX)) {
     const refPath = headContent.slice(5);
     const fullRefPath = path.join(gitDir, refPath);
     return {
-      type: 'ref',
+      type: HEAD_TYPES.REF,
       ref: refPath,
       fullPath: fullRefPath,
     };
   }
 
   return {
-    type: 'detached',
+    type: HEAD_TYPES.REF,
     hash: headContent,
   };
 }
@@ -24,26 +27,25 @@ function readHead(gitDir) {
 function getCurrentCommitHash(gitDir) {
   const head = readHead(gitDir);
 
-  // TODO: 얼리리턴으로 리팩토링
-  if (head.type === 'ref') {
-    if (!fs.existsSync(head.fullPath)) {
-      console.error(
-        `fatal: HEAD가 가리키는 브랜치 ${head.ref}가 존재하지 않습니다`
-      );
-      return null;
-    }
-    return fs.readFileSync(head.fullPath, 'utf-8').trim();
+  if (head.type === HEAD_TYPES.DETACHED) {
+    return head.hash;
   }
-  return head.hash;
+
+  if (!fs.existsSync(head.fullPath)) {
+    console.error(INVALID_HEAD_REF(head.ref));
+    return null;
+  }
+
+  return fs.readFileSync(head.fullPath, 'utf-8').trim();
 }
 
 function setHeadRef(gitDir, branch) {
-  const headPath = path.join(gitDir, 'HEAD');
+  const headPath = path.join(gitDir, HEAD_FILE);
   fs.writeFileSync(headPath, `ref: refs/heads/${branch}\n`);
 }
 
 function setHeadDetached(gitDir, commitHash) {
-  const headPath = path.join(gitDir, 'HEAD');
+  const headPath = path.join(gitDir, HEAD_FILE);
   fs.writeFileSync(headPath, `${commitHash}\n`);
 }
 

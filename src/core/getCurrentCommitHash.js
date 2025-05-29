@@ -1,14 +1,13 @@
 const fs = require('fs');
 const readHead = require('../utils/readHead');
+const { INVALID_HEAD_REF } = require('../domain/messages');
 
 function getCurrentCommitHash(gitDir) {
   const head = readHead(gitDir);
 
   if (head.type === 'ref') {
     if (!fs.existsSync(head.fullPath)) {
-      console.error(
-        `fatal: HEAD가 가리키는 브랜치 ${head.ref}가 존재하지 않습니다`
-      );
+      console.error(INVALID_HEAD_REF(head.ref));
       return null;
     }
     return fs.readFileSync(head.fullPath, 'utf-8').trim();

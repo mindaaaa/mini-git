@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const { REF_PREFIX, HEAD_FILE } = require('../domain/enums');
+const getHeadPath = require('../utils/getHeadPath');
 
 function getCurrentBranchName(gitDir) {
-  const headPath = path.join(gitDir, HEAD_FILE);
+  const headPath = getHeadPath(gitDir);
   const headContent = fs.readFileSync(headPath, 'utf-8').trim();
 
   if (headContent.startsWith(REF_PREFIX)) {

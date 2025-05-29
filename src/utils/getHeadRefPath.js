@@ -6,3 +6,6 @@ function getHeadRefPath(branch = DEFAULT_BRANCH) {
 }
 
 module.exports = getHeadRefPath;
+
+// hash 만드는거 로직 뺴기
+// 아예 PATH들 다 묶어서 export하기

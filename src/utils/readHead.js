@@ -1,9 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const { REF_PREFIX, HEAD_TYPES } = require('../domain/enums');
+const getHeadPath = require('../utils/getHeadPath');
 
 function readHead(gitDir) {
-  const headPath = path.join(gitDir, 'HEAD');
+  const headPath = getHeadPath(gitDir);
   const content = fs.readFileSync(headPath, 'utf-8').trim();
 
   if (content.startsWith(REF_PREFIX)) {

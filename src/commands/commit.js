@@ -1,15 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const createTreeHash = require('../core/createTreeHash');
-const writeObject = require('../core/writeObject');
+const writeGitObject = require('../core/writeGitObject');
 const getHeadRefPath = require('../utils/getHeadRefPath');
 const { AUTHOR_NAME, AUTHOR_EMAIL } = require('../config');
-const { HEAD_FILE, INDEX_FILE, REFS_HEADS_DIR } = require('../domain/enums');
+const { INDEX_FILE } = require('../domain/enums');
 const { COMMIT_NO_CHANGES, COMMIT_SUCCESS } = require('../domain/messages');
+const getHeadPath = require('../utils/getHeadPath');
 
 function commit(message, gitDir) {
   const indexPath = path.join(gitDir, INDEX_FILE);
-  const headPath = path.join(gitDir, HEAD_FILE);
+  const headPath = getHeadPath(gitDir);
 
   const headRef = fs
     .readFileSync(headPath, 'utf-8')
@@ -39,7 +40,7 @@ committer ${timestamp}
 ${message}
 `;
 
-  const commitHash = writeObject(commitContent, gitDir);
+  const commitHash = writeGitObject('commit', commitContent, gitDir);
 
   fs.writeFileSync(branchPath, commitHash);
   console.log(COMMIT_SUCCESS(message));
