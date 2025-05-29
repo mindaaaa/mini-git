@@ -1,6 +1,6 @@
 const path = require('path');
-const { OBJECTS_DIR } = require('../domain/enums');
-const splitHash = require('./splitHash');
+const { OBJECTS_DIR } = require('@domain/enums');
+const splitHash = require('../splitHash');
 
 function getObjectPath(gitDir, hash) {
   const { dir, file } = splitHash(hash);

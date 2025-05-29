@@ -1,7 +1,8 @@
 'use strict';
+require('module-alias/register');
 
-const resolveFilePath = require('../src/utils/resolveFilePath');
-const CommandStrategy = require('../src/strategies/CommandStrategy');
+const { resolveFilePath } = require('@utils/path');
+const CommandStrategy = require('@strategies/CommandStrategy');
 
 const [, , command, ...args] = process.argv;
 const BASE_PATH = '.mini-git';

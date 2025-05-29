@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { REF_PREFIX, HEAD_FILE, HEAD_TYPES } = require('../domain/enums');
-const { INVALID_HEAD_REF } = require('../domain/messages');
-const getHeadPath = require('../utils/getHeadPath');
+const { REF_PREFIX, HEAD_FILE, HEAD_TYPES } = require('@domain/enums');
+const { INVALID_HEAD_REF } = require('@domain/messages');
+const { getHeadPath } = require('@utils/path');
 
 function readHead(gitDir) {
   const headPath = getHeadPath(gitDir);

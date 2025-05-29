@@ -1,11 +1,11 @@
 'use strict';
 
-const init = require('../commands/init');
-const add = require('../commands/add');
-const commit = require('../commands/commit');
-const createBranch = require('../commands/branch');
-const checkoutBranch = require('../commands/checkout');
-const log = require('../commands/log');
+const init = require('@commands/init');
+const add = require('@commands/add');
+const commit = require('@commands/commit');
+const createBranch = require('@commands/branch');
+const checkoutBranch = require('@commands/checkout');
+const log = require('@commands/log');
 
 const CommandStrategy = {
   init: {

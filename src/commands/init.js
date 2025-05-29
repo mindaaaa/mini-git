@@ -2,16 +2,15 @@
 
 const fs = require('fs');
 const path = require('path');
-const { GIT_DIR, DEFAULT_BRANCH } = require('../config');
+const { GIT_DIR, DEFAULT_BRANCH } = require('@config');
 const {
   OBJECTS_DIR,
   REFS_HEADS_DIR,
   HEAD_FILE,
   REF_PREFIX,
-} = require('../domain/enums');
-const getHeadRefPath = require('../utils/getHeadRefPath');
-const resolveGitPath = require('../utils/resolveGitPath');
-const { INIT_ALREADY_EXISTS, INIT_SUCCESS } = require('../domain/messages');
+} = require('@domain/enums');
+const { getHeadRefPath, resolveGitPath } = require('@utils/path');
+const { INIT_ALREADY_EXISTS, INIT_SUCCESS } = require('@domain/messages');
 
 function init(gitDir = GIT_DIR) {
   const { absPath, relPath } = resolveGitPath(gitDir);

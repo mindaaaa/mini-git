@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { REF_PREFIX, HEAD_FILE } = require('../domain/enums');
-const getHeadPath = require('../utils/getHeadPath');
+const { REF_PREFIX } = require('@domain/enums');
+const { getHeadPath } = require('@utils/path');
 
 function getCurrentBranchName(gitDir) {
   const headPath = getHeadPath(gitDir);

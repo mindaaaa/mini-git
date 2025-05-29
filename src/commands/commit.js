@@ -1,12 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const createTreeHash = require('../core/createTreeHash');
-const writeGitObject = require('../core/writeGitObject');
-const getHeadRefPath = require('../utils/getHeadRefPath');
-const { AUTHOR_NAME, AUTHOR_EMAIL } = require('../config');
-const { INDEX_FILE } = require('../domain/enums');
-const { COMMIT_NO_CHANGES, COMMIT_SUCCESS } = require('../domain/messages');
-const getHeadPath = require('../utils/getHeadPath');
+const createTreeHash = require('@core/createTreeHash');
+const writeGitObject = require('@core/writeGitObject');
+const { getHeadRefPath, getHeadPath } = require('@utils/path');
+const { AUTHOR_NAME, AUTHOR_EMAIL } = require('@config');
+const { INDEX_FILE } = require('@domain/enums');
+const { COMMIT_NO_CHANGES, COMMIT_SUCCESS } = require('@domain/messages');
 
 function commit(message, gitDir) {
   const indexPath = path.join(gitDir, INDEX_FILE);

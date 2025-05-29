@@ -1,11 +1,11 @@
 const fs = require('fs');
-const { getCurrentCommitHash } = require('../core/headUtils');
+const { getCurrentCommitHash } = require('@core/headUtils');
 const {
   INVALID_HEAD,
   BRANCH_ALREADY_EXISTS,
   BRANCH_CREATED,
-} = require('../domain/messages');
-const { getBranchPath } = require('../domain/enums');
+} = require('@domain/messages');
+const { getBranchPath } = require('@domain/enums');
 
 function createBranch(gitDir, branch) {
   const commitHash = getCurrentCommitHash(gitDir);

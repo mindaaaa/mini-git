@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { INDEX_FILE } = require('../domain/enums');
+const { INDEX_FILE } = require('@domain/enums');
 
 function addFileToIndex(fileName, hash, gitDir) {
   const INDEX_PATH = path.join(gitDir, INDEX_FILE);

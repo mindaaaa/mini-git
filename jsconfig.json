@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["src/core/*"],
+      "@utils/*": ["src/utils/*"],
+      "@domain/*": ["src/domain/*"],
+      "@config/*": ["src/config/*"],
+      "@commands/*": ["src/commands/*"],
+      "@strategies/*": ["src/strategies/*"],
+      "@test/*": ["src/__test__/*"]
+    }
+  },
+  "include": ["src"]
+}

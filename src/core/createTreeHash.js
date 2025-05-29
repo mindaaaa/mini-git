@@ -1,4 +1,4 @@
-const writeGitObject = require('../core/writeGitObject');
+const writeGitObject = require('@core/writeGitObject');
 
 function createTreeHash(index, gitDir) {
   const fileEntries = Object.entries(index).map(([filename, hash]) => {

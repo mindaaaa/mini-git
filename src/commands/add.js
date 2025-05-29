@@ -1,10 +1,10 @@
 'use strict';
 
 const fs = require('fs');
-const resolveFilePath = require('../utils/resolveFilePath');
-const createBlobObject = require('../core/createBlobObject');
-const addFileToIndex = require('../core/addFileToIndex');
-const { FILE_NOT_FOUND, FILE_ADDED } = require('../domain/messages');
+const { resolveFilePath } = require('@utils/path');
+const createBlobObject = require('@core/createBlobObject');
+const addFileToIndex = require('@core/addFileToIndex');
+const { FILE_NOT_FOUND, FILE_ADDED } = require('@domain/messages');
 
 function add(filename, gitDir) {
   const filePath = resolveFilePath(filename);

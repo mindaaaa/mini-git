@@ -1,8 +1,8 @@
-const getCurrentCommitHash = require('../core/getCurrentCommitHash');
-const readObject = require('../utils/readObject');
-const parseCommitObject = require('../utils/parseCommitObject');
-const formatGitDate = require('../utils/formatGitDate');
-const getCurrentBranchName = require('../core/getCurrentBranchName');
+const getCurrentCommitHash = require('@core/getCurrentCommitHash');
+const readObject = require('@utils/readObject');
+const parseCommitObject = require('@utils/parseCommitObject');
+const formatGitDate = require('@utils/formatGitDate');
+const getCurrentBranchName = require('@core/getCurrentBranchName');
 
 function log(gitDir) {
   const branchName = getCurrentBranchName(gitDir);

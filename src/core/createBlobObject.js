@@ -1,4 +1,4 @@
-const writeGitObject = require('../core/writeGitObject');
+const writeGitObject = require('@core/writeGitObject');
 
 function createBlobObject(content, gitDir) {
   return writeGitObject('blob', content, gitDir);

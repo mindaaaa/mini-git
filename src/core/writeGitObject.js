@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const fs = require('fs');
-const getObjectPath = require('../utils/getObjectPath');
+const { getObjectPath } = require('@utils/path');
 
 /**
  * Git 객체를 생성하고 저장합니다.
