@@ -1,18 +1,21 @@
 const fs = require('fs');
 const path = require('path');
+const { OBJECTS_DIR } = require('../domain/enums');
+const { OBJECT_NOT_FOUND } = require('../domain/messages');
+const splitHash = require('../utils/splitHash');
 
 function readObject(hash, gitDir) {
-  const dir = hash.slice(0, 2);
-  const file = hash.slice(2);
-  const objectPath = path.join(gitDir, 'objects', dir, file);
+  const { dir, file } = splitHash(hash);
+
+  const objectPath = path.join(gitDir, OBJECTS_DIR, dir, file);
 
   if (!fs.existsSync(objectPath)) {
-    console.error(`fatal: '${hash}'는 유효하지 않은 객체입니다.`);
+    console.error(OBJECT_NOT_FOUND(hash));
     return null;
   }
 
-  const content = fs.readFileSync(objectPath);
-  return content.toString('utf-8');
+  const content = fs.readFileSync(objectPath, 'utf-8');
+  return content;
 }
 
 module.exports = readObject;

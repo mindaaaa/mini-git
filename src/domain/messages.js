@@ -17,4 +17,5 @@ module.exports = {
   COMMIT_NO_CHANGES: (branch) =>
     `현재 브랜치 ${branch}\n커밋할 사항 없음, 작업 폴더 깨끗함`,
   COMMIT_SUCCESS: (message) => `file changed, ${message}`,
+  OBJECT_NOT_FOUND: (hash) => `fatal: '${hash}'는 유효하지 않은 객체입니다.`,
 };

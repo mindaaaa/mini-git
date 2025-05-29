@@ -1,22 +1,22 @@
 const fs = require('fs');
 const path = require('path');
+const { REF_PREFIX, HEAD_TYPES } = require('../domain/enums');
 
 function readHead(gitDir) {
   const headPath = path.join(gitDir, 'HEAD');
   const content = fs.readFileSync(headPath, 'utf-8').trim();
 
-  if (content.startsWith('ref:')) {
-    const ref = content.slice(5); // 'ref: refs/heads/main' → 'refs/heads/main'
+  if (content.startsWith(REF_PREFIX)) {
+    const ref = content.slice(5);
     return {
-      type: 'ref',
+      type: HEAD_TYPES.REF,
       ref,
       fullPath: path.join(gitDir, ref),
     };
   }
 
-  // detached HEAD 상태
   return {
-    type: 'hash',
+    type: HEAD_TYPES.HASH,
     hash: content,
   };
 }
