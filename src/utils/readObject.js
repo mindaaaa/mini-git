@@ -12,8 +12,7 @@ function readObject(hash, gitDir) {
   }
 
   const compressed = fs.readFileSync(objectPath);
-  const content = zlib.inflateSync(compressed);
-  return content;
+  return zlib.inflateSync(compressed);
 }
 
 module.exports = readObject;
