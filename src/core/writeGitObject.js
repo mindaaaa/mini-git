@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const fs = require('fs');
+const zlib = require('zlib');
 const { getObjectPath } = require('@utils/path');
 
 /**
@@ -25,7 +26,8 @@ function writeGitObject(type, content, gitDir) {
     fs.mkdirSync(objectDir, { recursive: true });
   }
 
-  fs.writeFileSync(objectPath, store);
+  const compressed = zlib.deflateSync(store);
+  fs.writeFileSync(objectPath, compressed);
   return hash;
 }
 

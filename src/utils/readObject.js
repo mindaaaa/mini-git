@@ -1,4 +1,5 @@
 const fs = require('fs');
+const zlib = require('zlib');
 const { OBJECT_NOT_FOUND } = require('@domain/messages');
 const { getObjectPath } = require('./path');
 
@@ -10,7 +11,8 @@ function readObject(hash, gitDir) {
     return null;
   }
 
-  const content = fs.readFileSync(objectPath, 'utf-8');
+  const compressed = fs.readFileSync(objectPath);
+  const content = zlib.inflateSync(compressed);
   return content;
 }
 

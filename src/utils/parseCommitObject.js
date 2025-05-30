@@ -1,5 +1,6 @@
 function parseCommitObject(raw) {
-  const [metaBlock, commitMessageBlock, ...extra] = raw.split('\n\n');
+  const text = raw.toString('utf-8');
+  const [metaBlock, commitMessageBlock, ...extra] = text.split('\n\n');
   const headers = `${metaBlock}\n${commitMessageBlock}`.trim();
   const message = [...extra].join('\n\n').trim();
 

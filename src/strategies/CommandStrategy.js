@@ -6,6 +6,7 @@ const commit = require('@commands/commit');
 const createBranch = require('@commands/branch');
 const checkoutBranch = require('@commands/checkout');
 const log = require('@commands/log');
+const catFile = require('@commands/catFile');
 
 const CommandStrategy = {
   init: {
@@ -63,6 +64,22 @@ const CommandStrategy = {
   log: {
     run: (_, gitDir) => {
       log(gitDir);
+    },
+  },
+
+  'cat-file': {
+    run: (args, gitDir) => {
+      const [option, hash] = args;
+
+      if (option !== '-p' || !hash) {
+        console.error(
+          'fatal: cat-file: -p 옵션에는 <hash> 값을 입력해야 합니다'
+        );
+        console.error('usage: mini-git cat-file -p <hash>');
+        return;
+      }
+
+      catFile(hash, gitDir);
     },
   },
 };
