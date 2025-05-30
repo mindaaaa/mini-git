@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { getCurrentCommitHash } = require('@core/headUtils');
 const {
   INVALID_HEAD,
@@ -15,6 +16,7 @@ function createBranch(gitDir, branch) {
   }
 
   const branchPath = getBranchPath(gitDir, branch);
+  fs.mkdirSync(path.dirname(branchPath), { recursive: true });
 
   if (fs.existsSync(branchPath)) {
     console.error(BRANCH_ALREADY_EXISTS(branch));
