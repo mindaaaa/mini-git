@@ -13,10 +13,10 @@
  *
  * @param {Buffer} raw - zlib 압축 해제된 커밋 객체의 원시 데이터
  * @returns {{
- *   tree?: string,
- *   parent?: string,
- *   author?: string,
- *   timestamp?: string,
+ *   tree: string,
+ *   parent: string,
+ *   author: string,
+ *   timestamp: string,
  *   message: string
  * }} 파싱된 커밋 객체
  *
