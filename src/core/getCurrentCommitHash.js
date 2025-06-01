@@ -1,5 +1,5 @@
 const fs = require('fs');
-const readHead = require('@utils/readHead');
+const { readHead } = require('@utils/head');
 const { INVALID_HEAD_REF } = require('@domain/messages');
 
 function getCurrentCommitHash(gitDir) {

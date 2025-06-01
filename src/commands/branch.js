@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { getCurrentCommitHash } = require('@core/headUtils');
+const { getCurrentCommitHash } = require('@utils/head');
 const {
   INVALID_HEAD,
   BRANCH_ALREADY_EXISTS,

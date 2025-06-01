@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { setHeadRef } = require('@core/headUtils');
+const { setHeadRef } = require('@utils/head');
 const { BRANCH_NOT_FOUND, CHECKOUT_SUCCESS } = require('@domain/messages');
 const { getBranchPath } = require('@domain/enums');
 
