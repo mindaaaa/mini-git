@@ -2,53 +2,78 @@
 
 > Git의 내부 구조를 직접 구현해보는 CLI 기반 학습 프로젝트입니다.
 
-`add`, `commit`, `log`, `branch`, `checkout` 등  
-Git의 핵심 동작을 JavaScript로 재구현하면서  
-*버전 관리 시스템의 원리*를 몸으로 이해하는 것을 목표로 합니다.
+Git의 내부 동작 원리를 학습하며 구현한 Git 클론 프로젝트입니다.  
+Git 객체(`blob`, `tree`, `commit`) 생성과 참조 과정을 직접 구현해보며 구조를 체화했습니다.
 
----
+# 시연 데모
 
-## 📌 프로젝트 목표
+![demo](./images/mini-git-demo.gif)
 
-- Git의 **snapshot 기반 저장 구조** 체득
-- `blob`, `tree`, `commit`, `HEAD` 등 Git 객체 구조 직접 구현
-- CLI 명령어 흐름(`git add`, `git commit`, `git log`)을 JavaScript로 재현
-- 구조 설계를 통해 **자료구조, 파일시스템, OOP 감각** 강화
+```plaintext
+Working Dir → add() → Blob (해시)
+              ↓
+          Index (스테이징)
+              ↓
+        commit() → Tree → Commit
+                        ↑
+               HEAD → Branch (refs/heads/main)
+```
 
-## ⚙️ 사용 기술
+## 구현 기능
 
-| 분류        | 기술                                        |
-| ----------- | ------------------------------------------- |
-| 언어        | JavaScript (Node.js)                        |
-| 파일 I/O    | `fs` 모듈                                   |
-| CLI 처리    | `process.argv`, `readline`                  |
-| 데이터 저장 | JSON 기반 `.mygit/` 디렉토리 내부 객체 구조 |
+| 명령어     | 설명                                          |
+| ---------- | --------------------------------------------- |
+| `init`     | 저장소 초기화                                 |
+| `add`      | 파일을 `Blob` 객체로 저장 후 `index` 기록     |
+| `commit`   | `Tree`, `Commit` 객체 생성 및 `HEAD` 업데이트 |
+| `branch`   | 새로운 브랜치 생성                            |
+| `checkout` | 브랜치 전환                                   |
+| `log`      | 커밋 로그 출력                                |
 
-## 주요 기능
-
-| 명령어     | 설명                                              |
-| ---------- | ------------------------------------------------- |
-| `init`     | `.mygit/` 폴더 생성 및 초기 구조 설정             |
-| `add`      | - 파일을 읽고 해시(blob)로 저장<br>- index에 등록 |
-| `commit`   | snapshot 저장, 이전 커밋과 연결                   |
-| `log`      | HEAD에서 커밋 히스토리 추적 및 출력               |
-| `branch`   | 브랜치 포인터 생성                                |
-| `checkout` | HEAD 포인터 전환 및 상태 변경                     |
-
----
-
-## 🧱 디렉토리 구조
+## 설치 및 사용
 
 ```bash
-mini-git/
-├── src/
-│   ├── commands/       # CLI 명령어 처리 로직 (init, add, commit 등)
-│   ├── core/           # Git 내부 처리 로직 (객체 저장, HEAD 갱신 등)
-│   ├── domain/         # Git의 핵심 객체 (Blob, Tree, Commit, Branch)
-│   ├── utils/          # 해시 계산 등 유틸 함수
-│   └── index.js        # CLI 진입점
-├── .mygit/             # Git 객체가 저장되는 폴더 (init 후 생성됨)
-├── .gitignore          # Git 추적 제외 설정
-├── package.json        # 프로젝트 정보 및 실행 스크립트
-└── README.md           # 프로젝트 설명 문서
+npm install
+
+# 일반 실행
+node src/index.js init
+node src/index.js add hello.txt
+node src/index.js commit "first commit"
+
+# 또는 CLI 명령어로 등록 (1회 실행)
+npm link
+
+# 이후부터
+mini-git init
+mini-git add hello.txt
+mini-git commit "first commit"
+
 ```
+
+## 디렉토리 구조
+
+```bash
+src
+├── index.js                # CLI 진입점 (전략 패턴으로 명령어 분기)
+├── commands/               # 각 명령어 실행 함수
+├── core/                   # Git 내부 로직 (객체 생성, 해시 처리 등)
+├── strategies/             # 명령어 분기 로직 (전략 패턴)
+├── config/                 # 사용자 정보 및 환경 설정
+├── utils/                  # 공통 유틸 함수
+├── domain/                 # 메시지, 상수, Enum 정의
+└── __test__/               # Jest 테스트 코드
+```
+
+## 기술 스택
+
+| 기술                     | 사용 목적 및 역할                        |
+| ------------------------ | ---------------------------------------- |
+| **Node.js**              | CLI 기반 명령어 실행 환경                |
+| **Jest**                 | 커맨드별 단위 테스트 수행                |
+| **SHA-1 해시 구현**      | Git 객체 간 참조를 위한 고유 식별자 생성 |
+| **파일 시스템 스토리지** | `.mini-git` 디렉토리에 Git 객체 저장     |
+| **JSDoc**                | 함수 및 모듈 문서 자동 생성 도구         |
+
+> 복잡한 유틸 함수의 JSDoc 기반 자동 문서는 [여기서 확인](https://mindaaaa.github.io/mini-git/global.html)할 수 있습니다.
+
+🔍 더 깊은 내용이 궁금하다면?
