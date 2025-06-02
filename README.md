@@ -7,7 +7,7 @@ Git 객체(`blob`, `tree`, `commit`) 생성과 참조 과정을 직접 구현해
 
 # 시연 데모
 
-![demo](./images/mini-git-demo.gif)
+<img src="./images/mini-git-demo.gif" width="650" alt="mini-git CLI 시연 데모" />
 
 ```plaintext
 Working Dir → add() → Blob (해시)
