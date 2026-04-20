@@ -20,4 +20,6 @@ module.exports = {
   OBJECT_NOT_FOUND: (hash) => `fatal: '${hash}'는 유효하지 않은 객체입니다.`,
   INVALID_HEAD_REF: (ref) =>
     `fatal: HEAD가 가리키는 브랜치 ${ref}가 존재하지 않습니다`,
+  NOT_A_REPOSITORY:
+    "fatal: 현재 디렉토리는 mini-git 저장소가 아닙니다. 먼저 'mini-git init'을 실행하세요.",
 };
