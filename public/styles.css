@@ -287,10 +287,14 @@ input, textarea { font-family: inherit; }
   overflow: auto;
   padding: 36px 40px;
 }
-.graph-svg {
+.graph-svg-layer {
+  /* SVG branch curves overlay; HTML .c-node sits above */
+  position: absolute;
+  inset: 0;
   width: 100%;
-  min-height: 320px;
-  display: block;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
 }
 .graph-empty {
   color: var(--fg-mute);
@@ -559,19 +563,7 @@ input, textarea { font-family: inherit; }
   justify-content: flex-end;
 }
 
-/* commit graph */
-.graph-svg .commit-node { cursor: pointer; }
-.graph-svg .commit-node:hover circle { stroke: var(--accent); }
-.graph-svg .commit-node.selected circle { stroke: var(--accent); stroke-width: 2.5; }
-.graph-svg .edge { stroke: var(--line-2); stroke-width: 1.5; fill: none; }
-.graph-svg .edge.head-trunk { stroke: var(--accent); }
-.graph-svg .edge.branch { stroke: var(--blue); }
-.graph-svg .ref-label rect { fill: var(--bg-2); stroke: var(--line-2); }
-.graph-svg .ref-label.head rect { fill: var(--accent); stroke: var(--accent); }
-.graph-svg .ref-label.head text { fill: var(--bg); font-weight: 700; }
-.graph-svg .ref-label.branch text { fill: var(--blue); }
-.graph-svg .ref-label.tag rect { stroke: var(--purple); }
-.graph-svg .ref-label.tag text { fill: var(--purple); }
+/* (legacy SVG graph 셀렉터는 Step 4에서 제거. 신규 노드/리본은 .c-node/.c-ribbon 사용) */
 
 /* preset gallery modal */
 .preset-modal { width: min(760px, 92vw); max-height: 85vh; }
