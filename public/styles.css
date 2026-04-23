@@ -147,8 +147,16 @@ input, textarea { font-family: inherit; }
 /* LAYOUT */
 .app {
   display: grid;
-  grid-template-columns: 280px 1fr 340px;
+  /* minmax(0, 1fr): 1fr 트랙의 implicit minimum이 auto(=min-content)라
+     중앙 자식 .graph-inner(1600px)을 grid가 그대로 끌고 와 트랙을 팽창시킴.
+     0을 명시해서 트랙이 사용 가능 공간에만 맞게 잡히도록 강제. */
+  grid-template-columns: 280px minmax(0, 1fr) 340px;
   height: calc(100vh - 46px - 22px);
+  /* 우측 패널 보호용 안전망 — 어떤 이유로든 자식이 viewport를 넘어도 .app 안에서 잘려서
+     양쪽 사이드바는 절대 화면 밖으로 밀리지 않음. */
+  overflow: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 .panel {
   border-right: 1px solid var(--line);
@@ -237,6 +245,11 @@ input, textarea { font-family: inherit; }
 .center {
   display: flex;
   flex-direction: column;
+  /* grid item의 기본 min-width:auto(=min-content)가 자식 .graph-inner 의
+     explicit width(예: 1600px)를 끌고 와서 grid 1fr 트랙을 팽창시킴.
+     명시적으로 0을 줘서 트랙이 사용 가능 공간에 맞게 축소되고,
+     자식의 overflow:auto가 비로소 동작하게 함. */
+  min-width: 0;
   min-height: 0;
   background:
     linear-gradient(var(--bg-2) 1px, transparent 1px) 0 0 / 28px 28px,
@@ -247,16 +260,21 @@ input, textarea { font-family: inherit; }
 
 .graph-area {
   flex: 1;
+  /* flex item에도 동일하게 min-width:0 — 안 그러면 자식 inner의
+     1600px가 부모 .center 의 cross-axis 사이즈를 끌어올림. */
+  min-width: 0;
+  min-height: 0;
   position: relative;
   overflow: auto;
   padding: 36px 40px;
 }
 .graph-svg-layer {
-  /* SVG branch curves overlay; HTML .c-node sits above */
+  /* SVG branch curves overlay; HTML .c-node sits above.
+     사이즈는 인라인 width/height 속성(JS 계산값)이 결정한다.
+     CSS로 100% stretch하면 viewBox가 비대칭 스케일되어 HTML 노드 좌표와 어긋남. */
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  left: 0;
+  top: 0;
   pointer-events: none;
   z-index: 1;
 }

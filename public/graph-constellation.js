@@ -22,6 +22,11 @@
 export function renderConstellationGraph(container, ui, opts = {}) {
   container.innerHTML = '';
   container.style.position = 'relative';
+  /* container 자신에는 min-width/height 걸지 않는다 — 거꾸로 grid column을
+     팽창시켜 우측 inspector 패널을 화면 밖으로 밀어냄. 대신 inner wrapper
+     를 고정 사이즈로 만들고, container는 overflow:auto 로 그 안을 스크롤. */
+  container.style.minWidth = '';
+  container.style.minHeight = '';
 
   const commits = (ui && ui.graph) || [];
   const head = (ui && ui.head) || null;
@@ -35,15 +40,19 @@ export function renderConstellationGraph(container, ui, opts = {}) {
     empty.className = 'graph-empty';
     empty.innerHTML = 'run <code>mini-git init</code> then stage a file to see commits.';
     container.appendChild(empty);
-    container.style.minWidth = '';
-    container.style.minHeight = '';
     return;
   }
 
-  /* trunk = parent chain reachable from HEAD */
+  /* trunk = main 브랜치의 parent chain.
+     HEAD가 feature 브랜치에 있어도 main은 항상 트렁크(맨 아래 행)로 고정.
+     main 없으면 master, 그것도 없으면 HEAD로 fallback. */
   const byHash = new Map(commits.map((c) => [c.hash, c]));
   const trunkSet = new Set();
-  let cursor = head && head.hash;
+  const trunkBranch =
+    branches.find((b) => b.name === 'main') ||
+    branches.find((b) => b.name === 'master');
+  const trunkAnchor = trunkBranch ? trunkBranch.hash : (head && head.hash);
+  let cursor = trunkAnchor;
   while (cursor && byHash.has(cursor) && !trunkSet.has(cursor)) {
     trunkSet.add(cursor);
     cursor = byHash.get(cursor).parent;
@@ -92,27 +101,37 @@ export function renderConstellationGraph(container, ui, opts = {}) {
   const colY = (col) => trunkY - col * stepY;
   const colX = (idx) => leftMargin + idx * stepX;
 
-  container.style.minWidth = `${width}px`;
-  container.style.minHeight = `${height}px`;
+  /* inner wrapper: 그래프 전체 사이즈 (1600×510 등). container는 viewport에
+     fit한 채로 두고 이 inner를 가로/세로 스크롤. */
+  const inner = document.createElement('div');
+  inner.className = 'graph-inner';
+  inner.style.position = 'relative';
+  inner.style.width = `${width}px`;
+  inner.style.height = `${height}px`;
+  container.appendChild(inner);
 
-  /* ---- SVG layer: branch curves ---- */
+  /* ---- SVG layer: branch curves ----
+     SVG 사이즈를 viewBox와 1:1로 맞춰 좌표가 HTML 노드와 정확히 일치하도록.
+     gradient는 userSpaceOnUse로 viewBox 전체를 가로지르게 — 그래야 짧은 path도
+     trunk가 잘 보이고, 좌→우 fade가 일관됨. */
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const svg = document.createElementNS(SVG_NS, 'svg');
   svg.setAttribute('class', 'graph-svg-layer');
   svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-  svg.setAttribute('preserveAspectRatio', 'none');
   svg.setAttribute('width', String(width));
   svg.setAttribute('height', String(height));
 
+  const gradX1 = leftMargin;
+  const gradX2 = width - rightMargin / 2;
   const defs = document.createElementNS(SVG_NS, 'defs');
   defs.innerHTML = `
-    <linearGradient id="graphMain" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="rgba(243,240,232,0.06)" />
-      <stop offset="35%"  stop-color="rgba(243,240,232,0.40)" />
+    <linearGradient id="graphMain" gradientUnits="userSpaceOnUse" x1="${gradX1}" y1="0" x2="${gradX2}" y2="0">
+      <stop offset="0%"   stop-color="rgba(243,240,232,0.20)" />
+      <stop offset="50%"  stop-color="rgba(243,240,232,0.55)" />
       <stop offset="100%" stop-color="rgba(128,255,234,0.85)" />
     </linearGradient>
-    <linearGradient id="graphFeat" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="rgba(243,240,232,0.06)" />
+    <linearGradient id="graphFeat" gradientUnits="userSpaceOnUse" x1="${gradX1}" y1="0" x2="${gradX2}" y2="0">
+      <stop offset="0%"   stop-color="rgba(243,240,232,0.20)" />
       <stop offset="50%"  stop-color="rgba(255,126,182,0.55)" />
       <stop offset="100%" stop-color="rgba(255,126,182,0.85)" />
     </linearGradient>
@@ -159,7 +178,7 @@ export function renderConstellationGraph(container, ui, opts = {}) {
     svg.appendChild(path);
   }
 
-  container.appendChild(svg);
+  inner.appendChild(svg);
 
   /* ---- ref index ---- */
   const refsByHash = new Map();
@@ -217,7 +236,7 @@ export function renderConstellationGraph(container, ui, opts = {}) {
     node.appendChild(sub);
 
     node.addEventListener('click', () => onSelect(c.hash));
-    container.appendChild(node);
+    inner.appendChild(node);
 
     /* ribbons hang under the node, stacked downward */
     const refs = refsByHash.get(c.hash) || [];
@@ -234,10 +253,52 @@ export function renderConstellationGraph(container, ui, opts = {}) {
       ribbon.style.left = `${x}px`;
       ribbon.style.top = `${y + ribbonOffset}px`;
       ribbon.style.transform = 'translate(-50%, 0)';
-      container.appendChild(ribbon);
+      inner.appendChild(ribbon);
       ribbonOffset += 26;
     }
   }
+
+  /* HEAD가 viewport 밖으로 밀리지 않도록 부드럽게 따라감.
+     RUN ALL 자동 재생 시 새 commit이 우측에 추가될 때 자동 스크롤. */
+  keepHeadInView(container);
+}
+
+function keepHeadInView(container) {
+  requestAnimationFrame(() => {
+    const headEl = container.querySelector('.c-node.head');
+    if (!headEl) return;
+
+    const margin = 80;
+    const labelEstimate = 240;       /* 노드 + 우측 라벨까지 포함한 근사 폭 */
+
+    /* horizontal */
+    const headX = headEl.offsetLeft;
+    const headRight = headX + labelEstimate;
+    const viewLeft = container.scrollLeft;
+    const viewRight = viewLeft + container.clientWidth;
+    let targetLeft = viewLeft;
+    if (headRight > viewRight - margin) {
+      targetLeft = Math.max(0, headRight - container.clientWidth + margin);
+    } else if (headX < viewLeft + margin) {
+      targetLeft = Math.max(0, headX - margin);
+    }
+
+    /* vertical */
+    const headY = headEl.offsetTop;
+    const headBottom = headY + 60;
+    const viewTop = container.scrollTop;
+    const viewBottom = viewTop + container.clientHeight;
+    let targetTop = viewTop;
+    if (headBottom > viewBottom - margin) {
+      targetTop = Math.max(0, headBottom - container.clientHeight + margin);
+    } else if (headY < viewTop + margin) {
+      targetTop = Math.max(0, headY - margin);
+    }
+
+    if (targetLeft !== viewLeft || targetTop !== viewTop) {
+      container.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
+    }
+  });
 }
 
 function formatHHMM(ts) {

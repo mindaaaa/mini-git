@@ -89,5 +89,46 @@
       "mini-git commit \"C3 on main\"",
       "mini-git log"
     ]
+  },
+  {
+    "id": "team-sprint",
+    "title": "팀 스프린트 (복잡 시나리오)",
+    "description": "main 4 commit + feature-auth 2 + feature-ui 2 = 8 commit / 3 branch. 두 기능 브랜치가 main의 같은 지점에서 동시 분기 → 각자 진행 → main이 추가 발전. 데모 영상에서 그래프 복잡도/HEAD 이동/분기 곡선이 모두 보이는 시나리오.",
+    "files": {
+      "README.md": "# project\n\n팀 스프린트 데모용 저장소.\n",
+      "package.json": "{\n  \"name\": \"sprint-demo\",\n  \"version\": \"0.1.0\"\n}\n",
+      "auth.js": "exports.login = (id, pw) => true;\n",
+      "auth.test.js": "test('login resolves', () => {});\n",
+      "ui.html": "<!doctype html>\n<html><body><h1>UI</h1></body></html>\n",
+      "ui.css": "body { font: 14px/1.5 ui-monospace, monospace; color: #f3f0e8; }\n",
+      "NOTES.md": "# notes\n\n진행 중 메모.\n",
+      "CHANGELOG.md": "# changelog\n\n- 0.1.0 init\n"
+    },
+    "suggestedCommands": [
+      "mini-git init",
+      "mini-git add README.md",
+      "mini-git commit init-project",
+      "mini-git add package.json",
+      "mini-git commit setup-deps",
+      "mini-git branch feature-auth",
+      "mini-git checkout feature-auth",
+      "mini-git add auth.js",
+      "mini-git commit auth-module",
+      "mini-git add auth.test.js",
+      "mini-git commit auth-tests",
+      "mini-git checkout main",
+      "mini-git branch feature-ui",
+      "mini-git checkout feature-ui",
+      "mini-git add ui.html",
+      "mini-git commit ui-skeleton",
+      "mini-git add ui.css",
+      "mini-git commit ui-styles",
+      "mini-git checkout main",
+      "mini-git add NOTES.md",
+      "mini-git commit project-notes",
+      "mini-git add CHANGELOG.md",
+      "mini-git commit changelog",
+      "mini-git log"
+    ]
   }
 ]
