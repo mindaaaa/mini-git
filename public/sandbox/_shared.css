@@ -1,0 +1,122 @@
+/*
+ * Shared frame for sandbox component pages.
+ * Each component lives in an isolated page so we can iterate on visuals
+ * without touching the live playground. Tone: neutral dark, lets the
+ * component's own theme tokens dominate.
+ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sb-bg:        #08090c;
+  --sb-bg-2:      #11131a;
+  --sb-bg-3:      #181b24;
+  --sb-line:      #21242e;
+  --sb-line-2:    #2d313d;
+  --sb-fg:        #dcdfe6;
+  --sb-fg-dim:    #7a8092;
+  --sb-fg-mute:   #484d5a;
+  --sb-accent:    #c6ff4f;
+}
+
+html, body { min-height: 100%; }
+body {
+  background: var(--sb-bg);
+  color: var(--sb-fg);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* page header — fixed top strip with breadcrumb back to catalog */
+.sb-bar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 22px;
+  border-bottom: 1px solid var(--sb-line);
+  background: var(--sb-bg-2);
+}
+.sb-bar a {
+  color: var(--sb-fg-dim);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: color 0.12s;
+}
+.sb-bar a:hover { color: var(--sb-accent); }
+.sb-bar .sep { color: var(--sb-fg-mute); }
+.sb-bar .here {
+  color: var(--sb-fg);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.sb-bar .meta {
+  margin-left: auto;
+  color: var(--sb-fg-mute);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* page intro */
+.sb-intro {
+  padding: 28px 32px 12px;
+  border-bottom: 1px dashed var(--sb-line);
+}
+.sb-intro h1 {
+  font-family: 'Fraunces', 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.sb-intro p {
+  color: var(--sb-fg-dim);
+  max-width: 640px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* component stage — neutral container that does NOT impose its own theme.
+   Component pages are encouraged to add their own background overrides
+   via .stage[data-theme="constellation"] { ... } etc. */
+.sb-stage {
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* variant grid for showing several states side-by-side */
+.sb-variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+.sb-variant {
+  border: 1px solid var(--sb-line);
+  background: var(--sb-bg-2);
+  padding: 22px 22px 18px;
+  position: relative;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.sb-variant .label {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 9.5px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sb-fg-mute);
+}
+.sb-variant .label b { color: var(--sb-accent); font-weight: 500; }

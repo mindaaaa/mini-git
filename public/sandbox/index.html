@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mini-git · sandbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/sandbox/_shared.css" />
+<style>
+  .sb-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    padding: 28px 32px 48px;
+  }
+  a.sb-card {
+    display: block;
+    border: 1px solid var(--sb-line);
+    background: var(--sb-bg-2);
+    padding: 20px 22px 18px;
+    text-decoration: none;
+    color: var(--sb-fg);
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  a.sb-card:hover {
+    border-color: var(--sb-accent);
+    transform: translateY(-2px);
+  }
+  a.sb-card.placeholder {
+    opacity: 0.4;
+    pointer-events: none;
+    border-style: dashed;
+  }
+  .sb-card .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    color: var(--sb-fg-mute);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .sb-card h3 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+  }
+  .sb-card h3 b {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--sb-accent);
+  }
+  .sb-card p {
+    color: var(--sb-fg-dim);
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .sb-card .step {
+    border-top: 1px dashed var(--sb-line);
+    padding-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    color: var(--sb-fg-mute);
+    text-transform: uppercase;
+  }
+  .sb-card .step b { color: var(--sb-fg); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="sb-bar">
+  <span class="here">sandbox</span>
+  <span class="sep">/</span>
+  <a href="/">playground</a>
+  <span class="sep">/</span>
+  <a href="/explorations/index.html">explorations</a>
+  <span class="meta">component preview · port 3000</span>
+</div>
+
+<div class="sb-intro">
+  <h1>component <em>sandbox</em></h1>
+  <p>
+    constellation 리디자인을 메인 playground에 적용하기 전에, 컴포넌트별로 이 페이지에서
+    먼저 시각 검증한다. 모든 페이지는 <code>./mock-state.js</code>의 동일한 6-commit
+    상태를 공유한다 (main 4 commits + feature 2 commits, HEAD on main).
+  </p>
+</div>
+
+<div class="sb-grid">
+  <a class="sb-card" href="./tokens.html">
+    <div class="num">step 02 · tokens</div>
+    <h3>design <b>tokens</b></h3>
+    <p>constellation 색/타입 토큰 팔레트. <code>:root</code>와 <code>.theme-constellation</code> 비교.</p>
+    <div class="step">상태 · <b>예정</b></div>
+  </a>
+
+  <a class="sb-card placeholder" href="./node.html">
+    <div class="num">step 03 · node</div>
+    <h3>commit <b>node</b></h3>
+    <p>default / head (pulse) / feature × hover / selected variants.</p>
+    <div class="step">상태 · <b>예정</b></div>
+  </a>
+
+  <a class="sb-card placeholder" href="./ribbon.html">
+    <div class="num">step 03 · ribbon</div>
+    <h3>ref <b>ribbon</b></h3>
+    <p>HEAD / feature / branch 라벨 ribbon variants.</p>
+    <div class="step">상태 · <b>예정</b></div>
+  </a>
+
+  <a class="sb-card placeholder" href="./graph.html">
+    <div class="num">step 04 · graph</div>
+    <h3>full <b>graph</b></h3>
+    <p>mock 6-commit state로 fully-rendered 그래프. <code>renderGraph()</code> 직접 호출.</p>
+    <div class="step">상태 · <b>예정</b></div>
+  </a>
+
+  <a class="sb-card placeholder" href="./inspector.html">
+    <div class="num">step 05 · inspector</div>
+    <h3>commit <b>inspector</b></h3>
+    <p>우측 패널 (refs + object inspector) head / feature variants.</p>
+    <div class="step">상태 · <b>예정</b></div>
+  </a>
+</div>
+
+</body>
+</html>
