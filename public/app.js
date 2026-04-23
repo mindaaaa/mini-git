@@ -46,6 +46,10 @@ const state = {
   selectedHash: null,              /* selected commit hash for inspector */
   history: storage.get('history') || [],  /* terminal lines */
   pendingFiles: {},                /* virtual-shell writes queued for next /api/exec */
+  presetQueue: [],                 /* pending commands from a loaded preset */
+  presetQueueTotal: 0,             /* size of the queue at load time (for x/N counter) */
+  presetRunning: false,            /* RUN ALL 진행 중 */
+  presetCancelled: false,          /* STOP 클릭 시 set */
 };
 
 function persist() {
@@ -652,6 +656,7 @@ function applyPreset(preset) {
   state.history = [];
   state.pendingFiles = {};
   termBody.innerHTML = '';
+  resetPresetQueue();
 
   /* seed working tree from preset files */
   for (const [name, content] of Object.entries(preset.files || {})) {
@@ -661,16 +666,104 @@ function applyPreset(preset) {
   printLine({ text: `preset loaded: ${preset.title}`, cls: 'success' });
   if (preset.description) printLine({ text: preset.description });
 
+  /* suggested commands → 큐에 적재.
+     사용자는 터미널 헤더의 ▶ STEP / ▶▶ RUN ALL 로 실행. */
   const cmds = preset.suggestedCommands || [];
   if (cmds.length) {
+    state.presetQueue = [...cmds];
+    state.presetQueueTotal = cmds.length;
     printLine({ text: '' });
-    printLine({ text: 'suggested commands — copy & run one at a time:', cls: 'success' });
-    for (const cmd of cmds) printLine({ text: `  ${cmd}` });
+    printLine({ text: `${cmds.length}개 명령이 큐에 적재됨 — 터미널 헤더의 ▶ STEP 또는 ▶▶ RUN ALL 사용`, cls: 'success' });
   }
 
   render();
   persist();
   closePresetGallery();
+  updatePresetControlsUI();
+}
+
+/* =========================================================
+ * Preset queue runner — Step 7.5
+ * 자동 순차 실행(700ms 간격) + 단계별 수동 실행 두 모드 지원.
+ * ========================================================= */
+const QUEUE_STEP_DELAY_MS = 700;
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function stepPresetQueue() {
+  if (state.presetRunning) return;        /* 자동 실행 중에는 STEP 무시 */
+  if (!state.presetQueue.length) return;
+  const cmd = state.presetQueue.shift();
+  updatePresetControlsUI();
+  await submitCommand(cmd);
+  updatePresetControlsUI();
+}
+
+async function runPresetQueue() {
+  if (state.presetRunning) return;
+  if (!state.presetQueue.length) return;
+  state.presetRunning = true;
+  state.presetCancelled = false;
+  updatePresetControlsUI();
+  while (state.presetQueue.length && !state.presetCancelled) {
+    const cmd = state.presetQueue.shift();
+    updatePresetControlsUI();
+    await submitCommand(cmd);
+    if (state.presetCancelled || !state.presetQueue.length) break;
+    await sleep(QUEUE_STEP_DELAY_MS);
+  }
+  state.presetRunning = false;
+  updatePresetControlsUI();
+}
+
+function stopPresetQueue() {
+  state.presetCancelled = true;
+}
+
+function resetPresetQueue() {
+  state.presetQueue = [];
+  state.presetQueueTotal = 0;
+  state.presetRunning = false;
+  state.presetCancelled = false;
+  updatePresetControlsUI();
+}
+
+function updatePresetControlsUI() {
+  const controls = document.getElementById('preset-controls');
+  if (!controls) return;
+  const total = state.presetQueueTotal;
+  const remaining = state.presetQueue.length;
+  const done = total - remaining;
+  const running = state.presetRunning;
+  const queueDone = total > 0 && remaining === 0 && !running;
+
+  /* 큐가 아예 비어있고 실행 중도 아니면 컨트롤 숨김 */
+  if (total === 0) {
+    controls.hidden = true;
+    return;
+  }
+  controls.hidden = false;
+
+  document.getElementById('queue-count').textContent = `${done}/${total}`;
+  const btnStep = document.getElementById('btn-step');
+  const btnRun = document.getElementById('btn-run-all');
+  const btnStop = document.getElementById('btn-stop');
+
+  btnStep.disabled = running || remaining === 0;
+  btnRun.disabled = running || remaining === 0;
+  btnRun.hidden = running;
+  btnStop.hidden = !running;
+
+  /* 큐 다 비었고 실행 끝났으면 자동으로 잠시 후 컨트롤 숨김 */
+  if (queueDone) {
+    setTimeout(() => {
+      if (state.presetQueueTotal > 0 && state.presetQueue.length === 0 && !state.presetRunning) {
+        resetPresetQueue();
+      }
+    }, 1200);
+  }
 }
 
 async function openPresetGallery() {
@@ -695,9 +788,17 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   state.history = [];
   state.pendingFiles = {};
   termBody.innerHTML = '';
+  /* 진행 중이던 preset 큐도 정리 (자동 실행 중이면 cancel 플래그로 정지) */
+  state.presetCancelled = true;
+  resetPresetQueue();
   render();
   printLine({ text: 'session cleared. run `mini-git init` to begin.', cls: 'success' });
 });
+
+/* preset queue controls — terminal header 우측 */
+document.getElementById('btn-step').addEventListener('click', () => stepPresetQueue());
+document.getElementById('btn-run-all').addEventListener('click', () => runPresetQueue());
+document.getElementById('btn-stop').addEventListener('click', () => stopPresetQueue());
 document.getElementById('modal-cancel').addEventListener('click', closeEditor);
 document.getElementById('modal-save').addEventListener('click', saveEditor);
 modal.addEventListener('click', (e) => { if (e.target === modal) closeEditor(); });

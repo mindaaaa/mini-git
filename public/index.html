@@ -50,6 +50,12 @@
       <div class="terminal-header">
         <div class="term-dots"><i></i><i></i><i></i></div>
         <span>shell · mini-git playground</span>
+        <div class="preset-controls" id="preset-controls" hidden>
+          <span class="queue-count" id="queue-count">0/0</span>
+          <button class="btn-mini" id="btn-step" type="button">▶ STEP</button>
+          <button class="btn-mini btn-mini-primary" id="btn-run-all" type="button">▶▶ RUN ALL</button>
+          <button class="btn-mini btn-mini-warn" id="btn-stop" type="button" hidden>⏸ STOP</button>
+        </div>
       </div>
       <div class="terminal-body" id="terminal-body"></div>
       <div class="term-input-line">

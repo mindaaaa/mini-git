@@ -337,6 +337,68 @@ input, textarea { font-family: inherit; }
 }
 @keyframes blink { 50% { opacity: 0; } }
 
+/* preset queue controls — Step 7.5
+   터미널 헤더 우측에 자동/단계 실행 버튼과 진행 카운터. */
+.preset-controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preset-controls[hidden] { display: none; }
+.queue-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .15em;
+  color: var(--accent);
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, .3);
+}
+.btn-mini {
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--fg-dim);
+  padding: 3px 9px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: border-color .12s, color .12s, background .12s;
+}
+.btn-mini:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-mini:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+.btn-mini-primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  font-weight: 700;
+}
+.btn-mini-primary:hover:not(:disabled) {
+  background: #d5ff6e;
+  color: var(--bg);
+}
+.btn-mini-warn {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+.btn-mini-warn:hover:not(:disabled) {
+  background: var(--amber);
+  color: var(--bg);
+}
+
+/* constellation 톤일 때 primary 버튼 hover 색 정정 */
+.theme-constellation .btn-mini-primary:hover:not(:disabled) {
+  background: #a3ffef;
+}
+
 /* RIGHT: inspector */
 .inspector { padding: 0; overflow: auto; flex: 1; }
 .refs-section { padding: 14px 16px; }
