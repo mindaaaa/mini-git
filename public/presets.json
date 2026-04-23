@@ -1,0 +1,93 @@
+[
+  {
+    "id": "first-commit",
+    "title": "첫 커밋 만들기",
+    "description": "가장 기본적인 흐름. README 하나를 만들고 스테이징한 뒤 첫 커밋을 남깁니다.",
+    "files": {
+      "README.md": "# My First Repo\n\nmini-git playground 로 첫 커밋을 남겨보세요.\n"
+    },
+    "suggestedCommands": [
+      "mini-git init",
+      "mini-git add README.md",
+      "mini-git commit \"first commit\"",
+      "mini-git log"
+    ]
+  },
+  {
+    "id": "multi-file",
+    "title": "여러 파일 한 번에 스테이징",
+    "description": "세 파일을 각각 add 한 뒤 한 커밋으로 묶습니다. 스테이징 영역이 어떻게 쌓이는지 확인해보세요.",
+    "files": {
+      "index.html": "<!doctype html>\n<html><head><title>demo</title></head><body><h1>hello</h1></body></html>\n",
+      "style.css": "body { font-family: sans-serif; color: #333; }\n",
+      "app.js": "document.querySelector('h1').addEventListener('click', () => alert('hi'));\n"
+    },
+    "suggestedCommands": [
+      "mini-git init",
+      "mini-git add index.html",
+      "mini-git add style.css",
+      "mini-git add app.js",
+      "mini-git commit \"initial scaffolding\""
+    ]
+  },
+  {
+    "id": "branching",
+    "title": "브랜치 분기와 전환",
+    "description": "main 에 커밋 하나를 만든 뒤 feature 브랜치로 갈라집니다. 오른쪽 refs 패널과 가운데 그래프가 어떻게 변하는지 지켜보세요.",
+    "files": {
+      "a.txt": "a\n"
+    },
+    "suggestedCommands": [
+      "mini-git init",
+      "mini-git add a.txt",
+      "mini-git commit \"C1 on main\"",
+      "mini-git branch feature",
+      "mini-git checkout feature",
+      "echo \"b\" > b.txt",
+      "mini-git add b.txt",
+      "mini-git commit \"C2 on feature\"",
+      "mini-git log"
+    ]
+  },
+  {
+    "id": "nested",
+    "title": "중첩 폴더 (알려진 제약 실험)",
+    "description": "src/lib/ 같은 중첩 경로가 코어에서는 동작하지만, 이 UI의 Working Tree 패널은 최상위 파일만 나열합니다. 터미널에서 add/commit 은 잘 됩니다 — `mini-git log` 로 확인해보세요.",
+    "files": {
+      "README.md": "# nested paths demo\n",
+      "src/index.js": "require('./lib/util');\n",
+      "src/lib/util.js": "module.exports = { greet: () => 'hi' };\n"
+    },
+    "suggestedCommands": [
+      "mini-git init",
+      "mini-git add README.md",
+      "mini-git add src/index.js",
+      "mini-git add src/lib/util.js",
+      "mini-git commit \"nested commit\"",
+      "mini-git log"
+    ]
+  },
+  {
+    "id": "branch-and-diverge",
+    "title": "브랜치 분기 데모",
+    "description": "main과 feature를 번갈아 오가며 두 갈래로 갈라진 그래프를 만듭니다. 데모 영상 녹화용 — HEAD pulse + 브랜치 곡선이 가장 잘 보이는 시나리오.",
+    "files": {
+      "README.md": "# branch demo\n\n두 갈래로 분기한 뒤 각자 한 커밋씩 더 쌓는 구성.\n"
+    },
+    "suggestedCommands": [
+      "mini-git init",
+      "mini-git add README.md",
+      "mini-git commit \"C1 on main\"",
+      "mini-git branch feature",
+      "mini-git checkout feature",
+      "echo \"feature work\" > x.txt",
+      "mini-git add x.txt",
+      "mini-git commit \"C2 on feature\"",
+      "mini-git checkout main",
+      "echo \"main work\" > y.txt",
+      "mini-git add y.txt",
+      "mini-git commit \"C3 on main\"",
+      "mini-git log"
+    ]
+  }
+]
