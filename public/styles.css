@@ -645,3 +645,143 @@ input, textarea { font-family: inherit; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--line-2); }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* =========================================================
+ * Constellation components — Step 3
+ * commit-node(.c-node) and ref-ribbon(.c-ribbon).
+ * 네임스페이스 prefix `c-` 로 기존 SVG `.commit-node` / `.ref-label`
+ * 셀렉터와 충돌 방지. Step 4에서 renderGraph()가 이 요소를 emit.
+ * 색상은 constellation 토큰을 직접 참조 (테마 wrapper 유무와 무관).
+ * ========================================================= */
+.c-node {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  z-index: 3;
+}
+.c-node .core {
+  position: absolute;
+  inset: 4px;                                 /* 20×20 dot in 28×28 box */
+  border-radius: 50%;
+  background: var(--moon);
+  box-shadow:
+    0 0 0 1px var(--void),
+    0 0 14px rgba(243, 240, 232, .55);
+  transition: box-shadow .25s, transform .25s;
+}
+.c-node.feat .core {
+  background: var(--magenta);
+  box-shadow:
+    0 0 0 1px var(--void),
+    0 0 14px rgba(255, 126, 182, .55);
+}
+.c-node.head .core {
+  inset: 0;                                    /* full 28×28 */
+  background: var(--aurora);
+  box-shadow:
+    0 0 0 2px var(--void),
+    0 0 0 4px rgba(128, 255, 234, .18),
+    0 0 28px rgba(128, 255, 234, .85);
+  animation: c-node-pulse 2.4s ease-in-out infinite;
+}
+@keyframes c-node-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px var(--void),
+      0 0 0 4px rgba(128, 255, 234, .16),
+      0 0 22px rgba(128, 255, 234, .7);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px var(--void),
+      0 0 0 12px rgba(128, 255, 234, .04),
+      0 0 38px rgba(128, 255, 234, 1);
+  }
+}
+.c-node .halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px dashed rgba(174, 172, 184, .22);
+  transform: translate(-50%, -50%) scale(.9);
+  opacity: 0;
+  transition: opacity .25s, transform .35s;
+  pointer-events: none;
+}
+.c-node:hover .halo,
+.c-node.head .halo,
+.c-node.selected .halo {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.05);
+}
+.c-node.selected .core {
+  box-shadow:
+    0 0 0 1px var(--void),
+    0 0 0 3px var(--aurora),
+    0 0 18px rgba(128, 255, 234, .5);
+}
+.c-node .label {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: -2px;
+  white-space: nowrap;
+  font-family: 'Fraunces', 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 17px;
+  color: var(--moon);
+  letter-spacing: -.005em;
+  text-shadow: 0 0 12px rgba(0, 0, 0, .85);
+  pointer-events: none;
+}
+.c-node.feat .label { color: #ffe5f0; }
+.c-node.head .label {
+  font-weight: 500;
+  color: var(--aurora);
+  font-style: normal;
+  text-shadow: 0 0 14px rgba(128, 255, 234, .5);
+}
+.c-node .sub {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 22px;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--moon-mute);
+  letter-spacing: .14em;
+  text-shadow: 0 0 8px rgba(0, 0, 0, .8);
+  pointer-events: none;
+}
+
+/* ref ribbon — small pill label sitting under or next to a c-node */
+.c-ribbon {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid rgba(174, 172, 184, .18);
+  background: rgba(10, 9, 18, .85);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--moon);
+  white-space: nowrap;
+}
+.c-ribbon.head {
+  border-color: var(--aurora);
+  color: var(--aurora);
+  box-shadow: 0 0 18px rgba(128, 255, 234, .4);
+}
+.c-ribbon.feat {
+  border-color: var(--magenta);
+  color: var(--magenta);
+}
+.c-ribbon.tag {
+  border-color: var(--gold);
+  color: var(--gold);
+}
