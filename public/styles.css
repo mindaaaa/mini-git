@@ -417,58 +417,7 @@ input, textarea { font-family: inherit; }
   margin: -16px -16px 16px;
   border-top: 1px solid var(--line);
 }
-.obj-caption {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: var(--accent);
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.obj-title {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-size: 22px;
-  margin-bottom: 14px;
-  letter-spacing: -.3px;
-  line-height: 1.2;
-  word-break: break-word;
-}
-.obj-field {
-  display: grid;
-  grid-template-columns: 70px 1fr;
-  gap: 10px;
-  padding: 7px 0;
-  border-top: 1px dashed var(--line);
-  font-size: 11.5px;
-}
-.obj-field .label {
-  color: var(--fg-mute);
-  text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  padding-top: 2px;
-}
-.obj-field .value { color: var(--fg); word-break: break-all; line-height: 1.5; }
-.obj-field .value.sha { color: var(--accent); }
-.obj-field .value.link {
-  color: var(--blue);
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-underline-offset: 3px;
-}
-.commit-msg {
-  margin-top: 14px;
-  padding: 12px 14px;
-  background: var(--bg-2);
-  border-left: 2px solid var(--accent);
-  font-size: 13px;
-  color: var(--fg);
-  line-height: 1.55;
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-}
+/* (legacy .obj-* / .commit-msg 셀렉터는 Step 5에서 제거. 신규 인스펙터는 .det-* 사용) */
 .inspector-hint {
   padding: 24px 18px;
   font-family: 'Instrument Serif', serif;
@@ -777,3 +726,115 @@ input, textarea { font-family: inherit; }
   border-color: var(--gold);
   color: var(--gold);
 }
+
+/* =========================================================
+ * Object Inspector — Step 5
+ * design-2 톤으로 우측 패널 commit object 표시 영역 재구성.
+ * 색상은 constellation 토큰 직접 참조 (테마 wrapper 유무와 무관).
+ * 기존 .obj-* 셀렉터는 더 이상 emit되지 않음 (제거).
+ * ========================================================= */
+.det-body {
+  /* 부모가 padding을 제공한다 (.object-panel은 16px, sandbox에서는 wrapper가 부담) */
+  padding: 6px 0 0;
+}
+.det-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .3em;
+  color: var(--aurora);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.det-title {
+  font-family: 'Fraunces', 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 32px;
+  letter-spacing: -.02em;
+  line-height: 1;
+  color: var(--moon);
+  margin-bottom: 16px;
+}
+.det-title b {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--aurora);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 26px;
+  letter-spacing: 0;
+}
+.det-msg {
+  padding: 12px 14px;
+  border: 1px solid rgba(128, 255, 234, .22);
+  background: rgba(128, 255, 234, .04);
+  font-family: 'Fraunces', 'Instrument Serif', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--moon);
+  margin-bottom: 18px;
+  word-break: break-word;
+}
+.det-row {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(174, 172, 184, .08);
+  align-items: baseline;
+}
+.det-row .k {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .25em;
+  color: var(--moon-mute);
+  text-transform: uppercase;
+}
+.det-row .v {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--moon);
+  word-break: break-all;
+  line-height: 1.55;
+}
+.det-row .v.sha    { color: var(--aurora); }
+.det-row .v.parent { color: #9bbcff; }
+
+/* tree contents (blob list) — sandbox에서 mockTrees 시각화용 */
+.det-tree {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(174, 172, 184, .1);
+}
+.det-tree-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.det-tree-head .h {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: .3em;
+  color: var(--moon-mute);
+  text-transform: uppercase;
+}
+.det-tree-head .n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--aurora);
+  letter-spacing: .15em;
+}
+.blob {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(174, 172, 184, .07);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+}
+.blob:last-child { border-bottom: none; }
+.blob .name { color: var(--moon); }
+.blob .sha  { color: var(--moon-mute); font-size: 10px; letter-spacing: .1em; }

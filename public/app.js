@@ -475,7 +475,7 @@ function renderInspector() {
   if (!hash) {
     const hint = document.createElement('div');
     hint.className = 'inspector-hint';
-    hint.innerHTML = 'select a commit node in the graph to inspect its <em>tree</em>, <em>parent</em>, and message here.';
+    hint.textContent = '그래프에서 commit 노드를 선택하면 tree / parent / message가 여기 표시됩니다.';
     root.appendChild(hint);
     return;
   }
@@ -489,39 +489,32 @@ function renderInspector() {
     return;
   }
 
+  const head = state.ui?.head;
+  const isHead = head && head.hash === commit.hash;
+  const ctxLabel = isHead ? 'HEAD' : (commit.parent ? 'commit' : 'root commit');
+
   const body = document.createElement('div');
+  body.className = 'det-body';
   body.innerHTML = `
-    <div class="obj-caption">— commit object —</div>
-    <div class="obj-title"></div>
-    <div class="obj-field">
-      <div class="label">sha</div>
-      <div class="value sha"></div>
-    </div>
-    <div class="obj-field">
-      <div class="label">tree</div>
-      <div class="value"></div>
-    </div>
-    <div class="obj-field">
-      <div class="label">parent</div>
-      <div class="value"></div>
-    </div>
-    <div class="obj-field">
-      <div class="label">author</div>
-      <div class="value"></div>
-    </div>
-    <div class="obj-field">
-      <div class="label">date</div>
-      <div class="value"></div>
-    </div>
-    <div class="commit-msg"></div>
+    <div class="det-eyebrow"></div>
+    <h2 class="det-title">Commit <b></b></h2>
+    <div class="det-msg"></div>
+    <div class="det-row"><span class="k">type</span><span class="v">commit</span></div>
+    <div class="det-row"><span class="k">sha</span><span class="v sha"></span></div>
+    <div class="det-row"><span class="k">tree</span><span class="v parent"></span></div>
+    <div class="det-row"><span class="k">parent</span><span class="v parent"></span></div>
+    <div class="det-row"><span class="k">author</span><span class="v"></span></div>
+    <div class="det-row"><span class="k">date</span><span class="v"></span></div>
   `;
-  body.querySelector('.obj-title').textContent = commit.message || '(no message)';
-  body.querySelectorAll('.obj-field .value')[0].textContent = commit.hash;
-  body.querySelectorAll('.obj-field .value')[1].textContent = commit.tree || '—';
-  body.querySelectorAll('.obj-field .value')[2].textContent = commit.parent || '(root commit)';
-  body.querySelectorAll('.obj-field .value')[3].textContent = commit.author || '—';
-  body.querySelectorAll('.obj-field .value')[4].textContent = commit.timestamp || '—';
-  body.querySelector('.commit-msg').textContent = commit.message || '';
+  body.querySelector('.det-eyebrow').textContent = `Inspecting · ${ctxLabel}`;
+  body.querySelector('.det-title b').textContent = commit.hash.slice(0, 7);
+  body.querySelector('.det-msg').textContent = `"${commit.message || '(no message)'}"`;
+  const vs = body.querySelectorAll('.det-row .v');
+  vs[1].textContent = commit.hash;
+  vs[2].textContent = commit.tree || '—';
+  vs[3].textContent = commit.parent || '(root commit)';
+  vs[4].textContent = commit.author || '—';
+  vs[5].textContent = commit.timestamp || '—';
   root.appendChild(body);
 }
 
