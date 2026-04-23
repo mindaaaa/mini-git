@@ -243,43 +243,7 @@ input, textarea { font-family: inherit; }
     linear-gradient(90deg, var(--bg-2) 1px, transparent 1px) 0 0 / 28px 28px,
     var(--bg);
 }
-.center-header {
-  padding: 14px 22px 12px;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg-2);
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-.fig-label {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  color: var(--accent);
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-.fig-title {
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-size: 21px;
-  color: var(--fg);
-  letter-spacing: -.3px;
-  line-height: 1.1;
-}
-.fig-desc {
-  margin-left: auto;
-  font-family: 'Instrument Serif', serif;
-  font-style: italic;
-  font-size: 13px;
-  color: var(--fg-dim);
-  max-width: 340px;
-  line-height: 1.45;
-  text-align: right;
-  padding-top: 4px;
-  border-right: 1px solid var(--line-2);
-  padding-right: 16px;
-}
+/* (.center-header / .fig-* 영문 카피 영역은 Step 6에서 제거. 그래프 캔버스 호흡 공간 확보) */
 
 .graph-area {
   flex: 1;
@@ -838,3 +802,51 @@ input, textarea { font-family: inherit; }
 .blob:last-child { border-bottom: none; }
 .blob .name { color: var(--moon); }
 .blob .sha  { color: var(--moon-mute); font-size: 10px; letter-spacing: .1em; }
+
+/* =========================================================
+ * Constellation chrome overrides — Step 6
+ * 토큰 swap만으로 해결되지 않는 영역을 aurora 톤으로 재정의:
+ *  - hardcoded rgba 라임 그림자/그라데이션 → aurora 등가물
+ *  - statusbar(기본 라임 strip) → 차분한 다크 + aurora 액센트
+ *  - center grid 라인 색감 미세 조정
+ * ========================================================= */
+.theme-constellation .statusbar {
+  background: var(--void-2);
+  color: var(--moon-dim);
+  font-weight: 500;
+  border-top: 1px solid rgba(174, 172, 184, .08);
+}
+.theme-constellation .statusbar .sep {
+  color: var(--moon-mute);
+  opacity: .5;
+}
+
+/* btn-primary: 기본 lime glow → aurora glow */
+.theme-constellation .btn-primary {
+  box-shadow: 0 0 16px rgba(128, 255, 234, .25);
+}
+.theme-constellation .btn-primary:hover {
+  background: #a3ffef;
+  box-shadow: 0 0 22px rgba(128, 255, 234, .4);
+}
+
+/* refs: HEAD 강조 그라데이션 + dot glow → aurora */
+.theme-constellation .ref.active {
+  background: linear-gradient(90deg, rgba(128, 255, 234, .07), transparent);
+}
+.theme-constellation .ref-dot.head {
+  box-shadow: 0 0 0 3px rgba(128, 255, 234, .18);
+}
+
+/* preset card hover glow → aurora */
+.theme-constellation .preset-card:hover {
+  box-shadow: 0 0 0 1px var(--aurora), 0 0 18px rgba(128, 255, 234, .08);
+}
+
+/* center 그리드 라인 색감을 살짝 보정 (var(--bg-2)는 너무 어두워 그리드가 거의 안 보임) */
+.theme-constellation .center {
+  background:
+    linear-gradient(rgba(174, 172, 184, .04) 1px, transparent 1px) 0 0 / 28px 28px,
+    linear-gradient(90deg, rgba(174, 172, 184, .04) 1px, transparent 1px) 0 0 / 28px 28px,
+    var(--bg);
+}

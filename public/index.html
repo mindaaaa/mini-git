@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mini-git — playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=JetBrains+Mono:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body class="theme-constellation">
+
+<div class="topbar">
+  <div class="logo">mini-git</div>
+  <div class="breadcrumb">
+    <span>~/playground</span><span class="sep">/</span><span id="crumb-branch">main</span>
+  </div>
+  <div class="topbar-right">
+    <span class="stat-chip">OBJ <b id="stat-obj">0</b></span>
+    <span class="stat-chip">REF <b id="stat-ref">0</b></span>
+    <button class="btn" id="btn-presets">PRESETS</button>
+    <button class="btn" id="btn-reset">RESET</button>
+  </div>
+</div>
+
+<div class="app">
+  <!-- LEFT -->
+  <div class="panel">
+    <div class="panel-header">
+      <span>Working Tree</span>
+      <button class="hdr-btn" id="btn-new-file">+ NEW FILE</button>
+    </div>
+    <div class="tree" id="tree-working">
+      <div class="empty-hint">no files yet — try `+ new file` or `touch hello.txt`</div>
+    </div>
+    <div class="section-divider"><span>Staging Area</span><b id="stat-staged">0 files</b></div>
+    <div class="tree" id="tree-staged" style="padding-top: 0">
+      <div class="empty-hint">nothing staged</div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div class="center">
+    <div class="graph-area" id="graph-area">
+      <div class="graph-empty">run <code>mini-git init</code> to start.</div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="term-dots"><i></i><i></i><i></i></div>
+        <span>shell · mini-git playground</span>
+      </div>
+      <div class="terminal-body" id="terminal-body"></div>
+      <div class="term-input-line">
+        <span class="term-prompt"><span class="path" id="prompt-path">playground</span> ❯</span>
+        <input id="term-input" autocomplete="off" spellcheck="false" placeholder="mini-git init | mini-git add hello.txt | echo 'hi' > hello.txt" />
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="panel inspector">
+    <div class="panel-header">
+      <span>References</span>
+      <span class="count" id="ref-count">0 refs</span>
+    </div>
+    <div class="refs-section" id="refs-section">
+      <div class="empty-hint" style="padding-left: 11px">no refs yet</div>
+    </div>
+
+    <div class="object-panel" id="object-panel">
+      <div class="panel-header"><span>Object Inspector</span></div>
+      <div class="inspector-hint">
+        그래프에서 commit 노드를 선택하면 tree / parent / message가 여기 표시됩니다.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="statusbar">
+  <span>◆ <span id="status-branch">—</span></span>
+  <span class="sep">|</span>
+  <span><span id="status-objects">0</span> objects</span>
+  <span class="sep">|</span>
+  <span><span id="status-staged">0</span> staged</span>
+  <div class="right">
+    <span>sha-1</span>
+    <span class="sep">|</span>
+    <span>mini-git playground</span>
+  </div>
+</div>
+
+<!-- File editor modal -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Edit file</span>
+    </div>
+    <div class="modal-body">
+      <label for="modal-filename">filename</label>
+      <input id="modal-filename" type="text" placeholder="hello.txt" />
+      <label for="modal-content">content</label>
+      <textarea id="modal-content" placeholder="type file content here..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="modal-cancel">CANCEL</button>
+      <button class="btn btn-primary" id="modal-save">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preset gallery modal -->
+<div class="modal-backdrop" id="preset-backdrop">
+  <div class="modal preset-modal">
+    <div class="modal-header">
+      <span class="modal-title">Load a preset</span>
+      <span class="modal-note">프리셋을 선택하면 현재 세션이 초기화됩니다</span>
+    </div>
+    <div class="preset-gallery" id="preset-gallery">
+      <div class="preset-loading">loading presets…</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="preset-close">CLOSE</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js" type="module"></script>
+</body>
+</html>
