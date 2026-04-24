@@ -1,5 +1,8 @@
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
+
 const init = require('@commands/init');
 const add = require('@commands/add');
 const commit = require('@commands/commit');
@@ -7,6 +10,14 @@ const createBranch = require('@commands/branch');
 const checkoutBranch = require('@commands/checkout');
 const log = require('@commands/log');
 const catFile = require('@commands/catFile');
+const { HEAD_FILE } = require('@domain/enums');
+const { NOT_A_REPOSITORY } = require('@domain/messages');
+
+function requireRepo(gitDir) {
+  if (fs.existsSync(path.join(gitDir, HEAD_FILE))) return true;
+  console.error(NOT_A_REPOSITORY);
+  return false;
+}
 
 const CommandStrategy = {
   init: {
@@ -17,6 +28,7 @@ const CommandStrategy = {
 
   add: {
     run: (args, gitDir) => {
+      if (!requireRepo(gitDir)) return;
       const filename = args[0];
       if (!filename) {
         console.log(
@@ -30,6 +42,7 @@ const CommandStrategy = {
 
   commit: {
     run: (args, gitDir) => {
+      if (!requireRepo(gitDir)) return;
       const message = args.join(' ').trim();
       if (!message) {
         console.error('⚠️ 커밋 메시지를 입력해주세요.');
@@ -41,6 +54,7 @@ const CommandStrategy = {
 
   branch: {
     run: (args, gitDir) => {
+      if (!requireRepo(gitDir)) return;
       const branch = args[0];
       if (!branch) {
         console.error('⚠️ 브랜치 이름을 입력해주세요.');
@@ -52,6 +66,7 @@ const CommandStrategy = {
 
   checkout: {
     run: (args, gitDir) => {
+      if (!requireRepo(gitDir)) return;
       const branch = args[0];
       if (!branch) {
         console.error('fatal: 현재 위치가 만들 예정인 브랜치에 있습니다');
@@ -63,12 +78,14 @@ const CommandStrategy = {
 
   log: {
     run: (_, gitDir) => {
+      if (!requireRepo(gitDir)) return;
       log(gitDir);
     },
   },
 
   'cat-file': {
     run: (args, gitDir) => {
+      if (!requireRepo(gitDir)) return;
       const [option, hash] = args;
 
       if (option !== '-p' || !hash) {

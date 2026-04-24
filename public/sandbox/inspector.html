@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mini-git · sandbox · inspector</title>
+<link rel="icon" type="image/svg+xml" sizes="16x16" href="/favicon/favicon-16.svg" />
+<link rel="icon" type="image/svg+xml" sizes="32x32" href="/favicon/favicon-32.svg" />
+<link rel="icon" type="image/svg+xml" sizes="48x48" href="/favicon/favicon-48.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.svg" />
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon/favicon-512.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/sandbox/_shared.css" />
+<link rel="stylesheet" href="/styles.css" />
+<style>
+  body { overflow: auto; height: auto; background: var(--sb-bg); background-image: none; color: var(--sb-fg); }
+
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 18px;
+    padding: 0 32px 32px;
+  }
+  /* sandbox 한정: object-panel 외부에서 직접 .det-body 렌더할 때 padding 보충 */
+  .panels .panel {
+    background: var(--void);
+    background-image:
+      radial-gradient(ellipse at 18% 22%, rgba(128, 255, 234, .07), transparent 55%),
+      radial-gradient(ellipse at 82% 78%, rgba(255, 126, 182, .05), transparent 60%);
+    border: 1px solid rgba(174, 172, 184, .12);
+    padding: 22px 24px 24px;
+  }
+  .panels .label-tag {
+    font-size: 9.5px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--moon-mute);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed rgba(174, 172, 184, .12);
+  }
+  .panels .label-tag b { color: var(--aurora); font-weight: 500; }
+
+  /* hint variant panel needs darker bg */
+  .panels .panel.hint {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+  }
+  .inspector-hint {
+    /* override운영 톤: sandbox에서는 constellation 색감으로 */
+    color: var(--moon-mute);
+    font-family: 'Fraunces', 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 24px 0;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+</style>
+</head>
+<body class="theme-constellation">
+
+<div class="sb-bar">
+  <a href="/sandbox/index.html">sandbox</a>
+  <span class="sep">/</span>
+  <span class="here">inspector</span>
+  <span class="meta">step 05 · object inspector panel</span>
+</div>
+
+<div class="sb-intro">
+  <h1>commit <em>inspector</em></h1>
+  <p>
+    그래프 노드를 선택하면 우측 패널에 나타나는 commit object 상세.
+    <code>renderInspector()</code>가 emit하는 <code>.det-*</code> 마크업을 mock 데이터로 재현.
+    추가로 sandbox 한정 <code>.det-tree</code>(blob list) 미리보기를 마지막 패널에 포함 — 운영에서는
+    server 응답에 tree 내용이 들어오면 함께 표시 가능.
+  </p>
+</div>
+
+<div class="panels">
+  <!-- 1. HEAD commit -->
+  <div class="panel">
+    <div class="label-tag"><b>variant 01</b> · HEAD on main</div>
+    <div class="det-body">
+      <div class="det-eyebrow">Inspecting · HEAD</div>
+      <h2 class="det-title">Commit <b>9999111</b></h2>
+      <div class="det-msg">"fix: typo in greeting message"</div>
+      <div class="det-row"><span class="k">type</span><span class="v">commit</span></div>
+      <div class="det-row"><span class="k">sha</span><span class="v sha">99991115b1cd34f8a2e0c7d9b4f1e5a3c8d7e6b5</span></div>
+      <div class="det-row"><span class="k">tree</span><span class="v parent">3a9f2c8e1bcd…</span></div>
+      <div class="det-row"><span class="k">parent</span><span class="v parent">7890cde4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8</span></div>
+      <div class="det-row"><span class="k">author</span><span class="v">minda &lt;dev@example&gt;</span></div>
+      <div class="det-row"><span class="k">date</span><span class="v">2026-04-24T15:02:00+09:00</span></div>
+    </div>
+  </div>
+
+  <!-- 2. feature tip commit -->
+  <div class="panel">
+    <div class="label-tag"><b>variant 02</b> · feature tip</div>
+    <div class="det-body">
+      <div class="det-eyebrow">Inspecting · commit</div>
+      <h2 class="det-title">Commit <b>d8d9e0f</b></h2>
+      <div class="det-msg">"feat: tests for login"</div>
+      <div class="det-row"><span class="k">type</span><span class="v">commit</span></div>
+      <div class="det-row"><span class="k">sha</span><span class="v sha">d8d9e0f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1</span></div>
+      <div class="det-row"><span class="k">tree</span><span class="v parent">7c1e92a4f508d…</span></div>
+      <div class="det-row"><span class="k">parent</span><span class="v parent">f1f2a3a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4</span></div>
+      <div class="det-row"><span class="k">author</span><span class="v">minda &lt;dev@example&gt;</span></div>
+      <div class="det-row"><span class="k">date</span><span class="v">2026-04-24T14:48:00+09:00</span></div>
+    </div>
+  </div>
+
+  <!-- 3. root commit (no parent) + tree blobs -->
+  <div class="panel">
+    <div class="label-tag"><b>variant 03</b> · root commit + tree contents</div>
+    <div class="det-body">
+      <div class="det-eyebrow">Inspecting · root commit</div>
+      <h2 class="det-title">Commit <b>a1b2c3d</b></h2>
+      <div class="det-msg">"init readme"</div>
+      <div class="det-row"><span class="k">type</span><span class="v">commit</span></div>
+      <div class="det-row"><span class="k">sha</span><span class="v sha">a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0</span></div>
+      <div class="det-row"><span class="k">tree</span><span class="v parent">8e0c2d1a6f5b4…</span></div>
+      <div class="det-row"><span class="k">parent</span><span class="v parent">(root commit)</span></div>
+      <div class="det-row"><span class="k">author</span><span class="v">minda &lt;dev@example&gt;</span></div>
+      <div class="det-row"><span class="k">date</span><span class="v">2026-04-24T14:02:00+09:00</span></div>
+
+      <div class="det-tree">
+        <div class="det-tree-head">
+          <span class="h">tree · contents</span>
+          <span class="n">1 blob</span>
+        </div>
+        <div class="blob"><span class="name">README.md</span><span class="sha">d3486ae9136e7</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. no selection -->
+  <div class="panel hint">
+    <div class="label-tag"><b>variant 04</b> · 노드 선택 전</div>
+    <div class="inspector-hint">
+      그래프에서 commit 노드를 선택하면<br />
+      tree / parent / message가 여기 표시됩니다.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

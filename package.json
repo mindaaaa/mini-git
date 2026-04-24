@@ -7,7 +7,9 @@
   },
   "scripts": {
     "test": "jest",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json",
+    "dev": "node scripts/dev-server.js",
+    "e2e": "bash scripts/e2e.sh"
   },
   "keywords": [
     "git",

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mini-git · sandbox · tokens</title>
+<link rel="icon" type="image/svg+xml" sizes="16x16" href="/favicon/favicon-16.svg" />
+<link rel="icon" type="image/svg+xml" sizes="32x32" href="/favicon/favicon-32.svg" />
+<link rel="icon" type="image/svg+xml" sizes="48x48" href="/favicon/favicon-48.svg" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.svg" />
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon/favicon-512.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/sandbox/_shared.css" />
+<!-- 실제 운영 styles.css를 그대로 로드해 토큰을 그대로 검증.
+     단, body { overflow:hidden } 는 sandbox 스크롤을 막아서 아래에서 풀어준다. -->
+<link rel="stylesheet" href="/styles.css" />
+<style>
+  /* sandbox 한정 override — 운영 body 규칙으로 인한 부작용 정리 */
+  body {
+    overflow: auto;
+    height: auto;
+    background: var(--sb-bg);
+    background-image: none;
+    color: var(--sb-fg);
+  }
+
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  .swatch {
+    border: 1px solid var(--sb-line);
+    background: var(--sb-bg-2);
+    overflow: hidden;
+  }
+  .swatch .chip {
+    height: 64px;
+    border-bottom: 1px solid var(--sb-line);
+  }
+  .swatch .meta {
+    padding: 8px 10px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+  .swatch .name { color: var(--sb-fg); letter-spacing: 0.05em; }
+  .swatch .value {
+    color: var(--sb-fg-mute);
+    font-size: 10px;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 12px;
+  }
+  .compare-col {
+    border: 1px solid var(--sb-line);
+    background: var(--sb-bg-2);
+    padding: 22px 22px 24px;
+  }
+  .compare-col h3 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    margin-bottom: 16px;
+  }
+  .compare-col h3 b {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--sb-accent);
+  }
+
+  /* preview surface — uses the production tokens via cascade.
+     We render TWO of these: one in the default theme, one wrapped in
+     .theme-constellation. They show how the same component-level CSS
+     looks under each token set. */
+  .surface {
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--line);
+    padding: 22px 22px 24px;
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(198, 255, 79, .05), transparent 45%),
+      radial-gradient(circle at 85% 100%, rgba(106, 169, 255, .04), transparent 50%);
+  }
+  .theme-constellation .surface {
+    background-image:
+      radial-gradient(ellipse at 18% 22%, rgba(128, 255, 234, .07), transparent 55%),
+      radial-gradient(ellipse at 82% 78%, rgba(255, 126, 182, .05), transparent 60%);
+  }
+  .surface .stack { display: flex; flex-direction: column; gap: 12px; }
+  .surface .row {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .surface .row:last-child { border-bottom: none; padding-bottom: 0; }
+  .surface .label {
+    font-size: 9.5px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    width: 96px;
+  }
+  .surface .text-fg      { color: var(--fg); }
+  .surface .text-fg-dim  { color: var(--fg-dim); }
+  .surface .text-fg-mute { color: var(--fg-mute); }
+  .surface .accent-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .surface .accent-text { color: var(--accent); font-weight: 500; }
+  .surface .purple-text { color: var(--purple); font-weight: 500; }
+  .surface .blue-text   { color: var(--blue); font-weight: 500; }
+  .surface .amber-text  { color: var(--amber); font-weight: 500; }
+
+  .surface-headline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: var(--fg);
+  }
+  .surface-headline b {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 20px;
+    margin-bottom: 14px;
+    letter-spacing: -0.015em;
+  }
+  .section-title b { font-style: normal; font-weight: 500; color: var(--sb-accent); }
+</style>
+</head>
+<body>
+
+<div class="sb-bar">
+  <a href="/sandbox/index.html">sandbox</a>
+  <span class="sep">/</span>
+  <span class="here">tokens</span>
+  <span class="meta">step 02 · constellation palette</span>
+</div>
+
+<div class="sb-intro">
+  <h1>design <em>tokens</em></h1>
+  <p>
+    constellation 테마용 신규 토큰 13개가 <code>:root</code>에 추가되었다.
+    실제 swap은 <code>.theme-constellation</code> 스코프에서 일어나므로
+    클래스가 부착되지 않은 영역(현재 메인 playground)은 기존 라임그린 디자인을 그대로 유지한다.
+    아래에서 두 팔레트를 나란히 확인하고, 같은 surface가 테마별로 어떻게 보이는지 비교한다.
+  </p>
+</div>
+
+<div class="sb-stage">
+
+  <div>
+    <div class="section-title">1 · constellation <b>palette</b></div>
+    <div class="palette">
+      <div class="swatch"><div class="chip" style="background:#07060c"></div><div class="meta"><div class="name">--void</div><div class="value">#07060c</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#0a0912"></div><div class="meta"><div class="name">--void-2</div><div class="value">#0a0912</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#161425"></div><div class="meta"><div class="name">--ash</div><div class="value">#161425</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f3f0e8"></div><div class="meta"><div class="name">--moon</div><div class="value">#f3f0e8</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#aeacb8"></div><div class="meta"><div class="name">--moon-dim</div><div class="value">#aeacb8</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#5a586a"></div><div class="meta"><div class="name">--moon-mute</div><div class="value">#5a586a</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#80ffea"></div><div class="meta"><div class="name">--aurora</div><div class="value">#80ffea</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#2a8a7c"></div><div class="meta"><div class="name">--aurora-dim</div><div class="value">#2a8a7c</div></div></div>
+      <div class="swatch"><div class="chip" style="background:rgba(128,255,234,.35)"></div><div class="meta"><div class="name">--aurora-glow</div><div class="value">rgba(128,255,234,.35)</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ff7eb6"></div><div class="meta"><div class="name">--magenta</div><div class="value">#ff7eb6</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ffd166"></div><div class="meta"><div class="name">--gold</div><div class="value">#ffd166</div></div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-title">2 · 같은 surface, <b>두 테마</b> 비교</div>
+    <div class="compare">
+      <!-- DEFAULT THEME (lime green, current production) -->
+      <div class="compare-col">
+        <h3>default <b>(production)</b></h3>
+        <div class="surface">
+          <div class="surface-headline">a small <b>repository</b> tonight.</div>
+          <div class="stack">
+            <div class="row"><span class="label">fg</span><span class="text-fg">commit · refactor parser</span></div>
+            <div class="row"><span class="label">fg-dim</span><span class="text-fg-dim">7890cde · 14:21 · main</span></div>
+            <div class="row"><span class="label">fg-mute</span><span class="text-fg-mute">parent: e4f5a6b</span></div>
+            <div class="row"><span class="label">accent</span><span class="accent-pill">HEAD</span><span class="accent-text">→ main</span></div>
+            <div class="row"><span class="label">colors</span>
+              <span class="purple-text">tag</span>
+              <span class="blue-text">branch</span>
+              <span class="amber-text">modified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONSTELLATION THEME -->
+      <div class="compare-col theme-constellation">
+        <h3>constellation <b>(target)</b></h3>
+        <div class="surface">
+          <div class="surface-headline">a small <b>repository</b> tonight.</div>
+          <div class="stack">
+            <div class="row"><span class="label">fg</span><span class="text-fg">commit · refactor parser</span></div>
+            <div class="row"><span class="label">fg-dim</span><span class="text-fg-dim">7890cde · 14:21 · main</span></div>
+            <div class="row"><span class="label">fg-mute</span><span class="text-fg-mute">parent: e4f5a6b</span></div>
+            <div class="row"><span class="label">accent</span><span class="accent-pill">HEAD</span><span class="accent-text">→ main</span></div>
+            <div class="row"><span class="label">colors</span>
+              <span class="purple-text">tag</span>
+              <span class="blue-text">branch</span>
+              <span class="amber-text">modified</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--sb-fg-mute);letter-spacing:0.15em;text-transform:uppercase;padding:14px 0 30px;border-top:1px dashed var(--sb-line);">
+    note · 별 배경 / drift 애니메이션 / film grain은 의도적으로 제외 (시안과의 차이점)
+  </div>
+
+</div>
+
+</body>
+</html>
